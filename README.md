@@ -1,24 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project with [Mantine UI](https://mantine.dev/) components and [Prisma](https://www.prisma.io/) database integration.
+
+## Features
+
+- ⚡️ Next.js 16 with App Router
+- 🎨 Mantine UI components library
+- 🗄️ Prisma ORM with SQLite database
+- 📝 Full CRUD operations for posts
+- 🔔 Toast notifications
+- 💅 Modern, responsive UI
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
+
+```bash
+npm install
+```
+
+Generate the Prisma client:
+
+```bash
+npx prisma generate
+```
+
+Push the database schema:
+
+```bash
+npx prisma db push
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Database
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project uses Prisma with SQLite. The database file is located at `prisma/dev.db`.
+
+To view your database:
+
+```bash
+npx prisma studio
+```
+
+This will open Prisma Studio in your browser where you can view and edit your data.
+
+## Project Structure
+
+- `app/` - Next.js app directory with pages and API routes
+- `lib/` - Utility files including Prisma client
+- `prisma/` - Prisma schema and database files
+- `app/api/posts/` - API routes for post CRUD operations
 
 ## Learn More
 
