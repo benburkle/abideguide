@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { Button, Stack, TextInput, Textarea, Group, ActionIcon, Box, Text, Title, Modal, Stepper, Grid } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconHelp, IconArrowLeft, IconChevronDown, IconChevronUp, IconCheck } from '@tabler/icons-react';
+import { IconHelp, IconArrowLeft, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { useEditor } from '@tiptap/react';
 import { RichTextEditor } from '@mantine/tiptap';
 import StarterKit from '@tiptap/starter-kit';
@@ -54,6 +54,7 @@ export default function EditSessionPage() {
   const [selectedGuideStep, setSelectedGuideStep] = useState<GuideStep | null>(null);
   const [showInstructions, setShowInstructions] = useState<Record<number, boolean>>({});
   const [showExample, setShowExample] = useState<Record<number, boolean>>({});
+  const [showSessionDetails, setShowSessionDetails] = useState(false);
   const [editorMounted, setEditorMounted] = useState(false);
 
   const insightsEditor = useEditor({
@@ -179,26 +180,6 @@ export default function EditSessionPage() {
     return sessionSteps[activeStep];
   };
 
-  const isStepCompleted = (stepIndex: number) => {
-    const step = sessionSteps[stepIndex];
-    return step && step.insights && step.insights.trim() !== '';
-  };
-
-  const CompletedStepIcon = () => (
-    <Box
-      style={{
-        width: 32,
-        height: 32,
-        borderRadius: '50%',
-        backgroundColor: 'var(--mantine-color-blue-6)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
-      <IconCheck size={20} color="white" strokeWidth={3} />
-    </Box>
-  );
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -315,99 +296,109 @@ export default function EditSessionPage() {
       <form onSubmit={handleSubmit}>
         <Stack gap="md">
           <Box>
-            <Grid mb="md">
-              <Grid.Col span={{ base: 12, sm: 4 }}>
-                <TextInput
-                  label="Date"
-                  type="date"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
-                />
-              </Grid.Col>
-              <Grid.Col span={{ base: 12, sm: 4 }}>
-                <TextInput
-                  label="Time"
-                  type="time"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                />
-              </Grid.Col>
-              <Grid.Col span={{ base: 12, sm: 4 }}>
-                <TextInput
-                  label="Reference"
-                  placeholder="Enter reference text"
-                  value={reference}
-                  onChange={(e) => setReference(e.target.value)}
-                />
-              </Grid.Col>
-            </Grid>
-            <Box>
-              <Text size="sm" fw={500} mb={5}>
-                Insights
-              </Text>
-              {editorMounted && insightsEditor ? (
-                <RichTextEditor editor={insightsEditor} style={{ minHeight: 100 }}>
-                  <RichTextEditor.Toolbar sticky stickyOffset={0}>
-                    <RichTextEditor.ControlsGroup>
-                      <RichTextEditor.Bold />
-                      <RichTextEditor.Italic />
-                      <RichTextEditor.Underline />
-                      <RichTextEditor.Strikethrough />
-                      <RichTextEditor.ClearFormatting />
-                      <RichTextEditor.Highlight />
-                      <RichTextEditor.Code />
-                    </RichTextEditor.ControlsGroup>
-                    <RichTextEditor.ControlsGroup>
-                      <RichTextEditor.H1 />
-                      <RichTextEditor.H2 />
-                      <RichTextEditor.H3 />
-                      <RichTextEditor.H4 />
-                    </RichTextEditor.ControlsGroup>
-                    <RichTextEditor.ControlsGroup>
-                      <RichTextEditor.Blockquote />
-                      <RichTextEditor.Hr />
-                      <RichTextEditor.BulletList />
-                      <RichTextEditor.OrderedList />
-                    </RichTextEditor.ControlsGroup>
-                    <RichTextEditor.ControlsGroup>
-                      <RichTextEditor.Link />
-                      <RichTextEditor.Unlink />
-                    </RichTextEditor.ControlsGroup>
-                    <RichTextEditor.ControlsGroup>
-                      <RichTextEditor.AlignLeft />
-                      <RichTextEditor.AlignCenter />
-                      <RichTextEditor.AlignJustify />
-                      <RichTextEditor.AlignRight />
-                    </RichTextEditor.ControlsGroup>
-                    <RichTextEditor.ControlsGroup>
-                      <RichTextEditor.Undo />
-                      <RichTextEditor.Redo />
-                    </RichTextEditor.ControlsGroup>
-                  </RichTextEditor.Toolbar>
-                  <RichTextEditor.Content />
-                </RichTextEditor>
-              ) : (
-                <Box style={{ minHeight: 100, border: '1px solid var(--mantine-color-gray-3)', borderRadius: '4px', padding: '8px' }}>
-                  <Text size="sm" c="dimmed">Loading editor...</Text>
+            <Button
+              variant="subtle"
+              size="xs"
+              leftSection={showSessionDetails ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />}
+              onClick={() => setShowSessionDetails(!showSessionDetails)}
+              mb="xs"
+              justify="flex-start"
+            >
+              Session Details
+            </Button>
+            {showSessionDetails && (
+              <Box mb="md">
+                <Grid mb="md">
+                  <Grid.Col span={{ base: 12, sm: 4 }}>
+                    <TextInput
+                      label="Date"
+                      type="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={{ base: 12, sm: 4 }}>
+                    <TextInput
+                      label="Time"
+                      type="time"
+                      value={time}
+                      onChange={(e) => setTime(e.target.value)}
+                    />
+                  </Grid.Col>
+                  <Grid.Col span={{ base: 12, sm: 4 }}>
+                    <TextInput
+                      label="Reference"
+                      placeholder="Enter reference text"
+                      value={reference}
+                      onChange={(e) => setReference(e.target.value)}
+                    />
+                  </Grid.Col>
+                </Grid>
+                <Box>
+                  <Text size="sm" fw={500} mb={5}>
+                    Insights
+                  </Text>
+                  {editorMounted && insightsEditor ? (
+                    <RichTextEditor editor={insightsEditor} style={{ minHeight: 100 }}>
+                      <RichTextEditor.Toolbar sticky stickyOffset={0}>
+                        <RichTextEditor.ControlsGroup>
+                          <RichTextEditor.Bold />
+                          <RichTextEditor.Italic />
+                          <RichTextEditor.Underline />
+                          <RichTextEditor.Strikethrough />
+                          <RichTextEditor.ClearFormatting />
+                          <RichTextEditor.Highlight />
+                          <RichTextEditor.Code />
+                        </RichTextEditor.ControlsGroup>
+                        <RichTextEditor.ControlsGroup>
+                          <RichTextEditor.H1 />
+                          <RichTextEditor.H2 />
+                          <RichTextEditor.H3 />
+                          <RichTextEditor.H4 />
+                        </RichTextEditor.ControlsGroup>
+                        <RichTextEditor.ControlsGroup>
+                          <RichTextEditor.Blockquote />
+                          <RichTextEditor.Hr />
+                          <RichTextEditor.BulletList />
+                          <RichTextEditor.OrderedList />
+                        </RichTextEditor.ControlsGroup>
+                        <RichTextEditor.ControlsGroup>
+                          <RichTextEditor.Link />
+                          <RichTextEditor.Unlink />
+                        </RichTextEditor.ControlsGroup>
+                        <RichTextEditor.ControlsGroup>
+                          <RichTextEditor.AlignLeft />
+                          <RichTextEditor.AlignCenter />
+                          <RichTextEditor.AlignJustify />
+                          <RichTextEditor.AlignRight />
+                        </RichTextEditor.ControlsGroup>
+                        <RichTextEditor.ControlsGroup>
+                          <RichTextEditor.Undo />
+                          <RichTextEditor.Redo />
+                        </RichTextEditor.ControlsGroup>
+                      </RichTextEditor.Toolbar>
+                      <RichTextEditor.Content />
+                    </RichTextEditor>
+                  ) : (
+                    <Box style={{ minHeight: 100, border: '1px solid var(--mantine-color-gray-3)', borderRadius: '4px', padding: '8px' }}>
+                      <Text size="sm" c="dimmed">Loading editor...</Text>
+                    </Box>
+                  )}
                 </Box>
-              )}
-            </Box>
+              </Box>
+            )}
           </Box>
 
           {sessionSteps.length > 0 && (
             <Stepper active={activeStep} onStepClick={setActiveStep} breakpoint="sm" mb="xl">
-              {sessionSteps.map((step, index) => {
-                const completed = isStepCompleted(index);
-                return (
-                  <Stepper.Step
-                    key={step.id}
-                    label={`Step ${index + 1}`}
-                    description={step.guideStep.name}
-                    icon={completed ? <CompletedStepIcon /> : undefined}
-                  >
-                  </Stepper.Step>
-                );
-              })}
+              {sessionSteps.map((step, index) => (
+                <Stepper.Step
+                  key={step.id}
+                  label={`Step ${index + 1}`}
+                  description={step.guideStep.name}
+                >
+                </Stepper.Step>
+              ))}
             </Stepper>
           )}
 
@@ -432,12 +423,13 @@ export default function EditSessionPage() {
                           onClick={() => setShowInstructions({ ...showInstructions, [stepIndex]: !instructionsVisible })}
                           mb="xs"
                           fullWidth
+                          justify="flex-start"
                         >
                           Instructions
                         </Button>
                         {instructionsVisible && (
-                          <Box>
-                            <Text size="sm">{currentStep.guideStep.instructions}</Text>
+                          <Box style={{ textAlign: 'left' }}>
+                            <Text size="sm" style={{ textAlign: 'left' }}>{currentStep.guideStep.instructions}</Text>
                           </Box>
                         )}
                       </Box>
@@ -453,12 +445,13 @@ export default function EditSessionPage() {
                           onClick={() => setShowExample({ ...showExample, [stepIndex]: !exampleVisible })}
                           mb="xs"
                           fullWidth
+                          justify="flex-start"
                         >
                           Example
                         </Button>
                         {exampleVisible && (
-                          <Box>
-                            <Text size="sm">{currentStep.guideStep.example}</Text>
+                          <Box style={{ textAlign: 'left' }}>
+                            <Text size="sm" style={{ textAlign: 'left' }}>{currentStep.guideStep.example}</Text>
                           </Box>
                         )}
                       </Box>
