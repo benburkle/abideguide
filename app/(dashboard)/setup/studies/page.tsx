@@ -31,9 +31,9 @@ interface Resource {
 interface Study {
   id: number;
   name: string;
-  scheduleId: number;
+  scheduleId: number | null;
   resourceId: number;
-  schedule: Schedule;
+  schedule: Schedule | null;
   resource: Resource;
   sessions: any[];
 }

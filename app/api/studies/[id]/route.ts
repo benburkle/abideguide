@@ -16,6 +16,20 @@ export async function GET(
           orderBy: {
             date: 'desc',
           },
+          include: {
+            sessionSteps: {
+              include: {
+                guideStep: true,
+              },
+              orderBy: {
+                guideStep: {
+                  index: 'asc',
+                },
+              },
+            },
+            guideStep: true,
+            selection: true,
+          },
         },
       },
     });
@@ -46,23 +60,24 @@ export async function PUT(
     const body = await request.json();
     const { name, scheduleId, resourceId } = body;
 
-    if (!name) {
+    if (!name || typeof name !== 'string' || name.trim() === '') {
       return NextResponse.json(
-        { error: 'Name is required' },
-        { status: 400 }
-      );
-    }
-
-    if (!scheduleId) {
-      return NextResponse.json(
-        { error: 'Schedule ID is required' },
+        { error: 'Name is required', details: 'Name must be a non-empty string' },
         { status: 400 }
       );
     }
 
     if (!resourceId) {
       return NextResponse.json(
-        { error: 'Resource ID is required' },
+        { error: 'Resource ID is required', details: 'Resource ID must be provided' },
+        { status: 400 }
+      );
+    }
+
+    const parsedResourceId = parseInt(resourceId);
+    if (isNaN(parsedResourceId)) {
+      return NextResponse.json(
+        { error: 'Invalid Resource ID', details: 'Resource ID must be a valid number' },
         { status: 400 }
       );
     }
@@ -70,9 +85,9 @@ export async function PUT(
     const study = await prisma.study.update({
       where: { id: parseInt(id) },
       data: {
-        name,
-        scheduleId: parseInt(scheduleId),
-        resourceId: parseInt(resourceId),
+        name: name.trim(),
+        scheduleId: scheduleId ? parseInt(scheduleId) : null,
+        resourceId: parsedResourceId,
       },
       include: {
         schedule: true,

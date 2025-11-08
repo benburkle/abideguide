@@ -12,6 +12,22 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 
+// Helper function to get HTTP status descriptions
+function getStatusDescription(status: number): string {
+  const descriptions: Record<number, string> = {
+    400: 'Bad Request - Invalid input data',
+    401: 'Unauthorized - Authentication required',
+    403: 'Forbidden - Access denied',
+    404: 'Not Found - Resource does not exist',
+    409: 'Conflict - Resource already exists',
+    422: 'Unprocessable Entity - Validation error',
+    500: 'Internal Server Error - Server error occurred',
+    502: 'Bad Gateway - Upstream server error',
+    503: 'Service Unavailable - Service temporarily unavailable',
+  };
+  return descriptions[status] || `HTTP ${status} error`;
+}
+
 interface Schedule {
   id: number;
   day: string;
@@ -28,9 +44,9 @@ interface Resource {
 interface Study {
   id: number;
   name: string;
-  scheduleId: number;
+  scheduleId: number | null;
   resourceId: number;
-  schedule: Schedule;
+  schedule: Schedule | null;
   resource: Resource;
   sessions: any[];
 }
@@ -64,7 +80,7 @@ export function EditStudyModal({
       if (study) {
         setFormData({
           name: study.name || '',
-          scheduleId: study.scheduleId.toString(),
+          scheduleId: study.scheduleId ? study.scheduleId.toString() : '',
           resourceId: study.resourceId.toString(),
         });
       } else {
@@ -109,16 +125,20 @@ export function EditStudyModal({
       const url = study ? `/api/studies/${study.id}` : '/api/studies';
       const method = study ? 'PUT' : 'POST';
 
+      const requestBody = {
+        name: formData.name,
+        scheduleId: formData.scheduleId || null,
+        resourceId: formData.resourceId,
+      };
+
+      console.log('Submitting study:', { url, method, body: requestBody });
+
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: formData.name,
-          scheduleId: formData.scheduleId,
-          resourceId: formData.resourceId,
-        }),
+        body: JSON.stringify(requestBody),
       });
 
       if (response.ok) {
@@ -130,14 +150,74 @@ export function EditStudyModal({
         onSaved();
         onClose();
       } else {
-        let errorData;
+        // Clone response to read body multiple times if needed
+        const responseClone = response.clone();
+        let errorData: any = null;
+        let errorMessage = `HTTP ${response.status}: ${response.statusText || 'Failed to save study'}`;
+        
         try {
-          errorData = await response.json();
-        } catch (e) {
-          errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
+          // Try to parse JSON response first
+          try {
+            errorData = await responseClone.json();
+            
+            // Extract error message from parsed data
+            if (errorData && typeof errorData === 'object') {
+              errorMessage = 
+                errorData.error || 
+                errorData.details || 
+                errorData.message ||
+                errorMessage;
+            }
+          } catch (jsonError) {
+            // If JSON parsing fails, try reading as text from original response
+            try {
+              const text = await response.text();
+              if (text && text.trim()) {
+                errorMessage = text;
+              }
+            } catch (textError) {
+              console.error('Failed to read error response as text:', textError);
+            }
+          }
+        } catch (readError) {
+          console.error('Failed to read error response:', readError);
+          errorMessage = `HTTP ${response.status}: ${response.statusText || 'Failed to read error response'}`;
         }
-        console.error('API Error Response:', errorData);
-        const errorMessage = errorData.error || errorData.details || `HTTP ${response.status}: Failed to save study`;
+        
+        // Build error log with explicit values - never log empty objects
+        const errorLogEntries: any[] = [
+          `Status: ${response.status}`,
+          `Status Text: ${response.statusText || 'N/A'}`,
+          `Status Description: ${getStatusDescription(response.status)}`,
+        ];
+        
+        if (errorData !== null && errorData !== undefined) {
+          if (typeof errorData === 'object') {
+            const keys = Object.keys(errorData);
+            if (keys.length > 0) {
+              errorLogEntries.push(`Error Data: ${JSON.stringify(errorData)}`);
+            } else {
+              errorLogEntries.push('Error Data: Empty object {}');
+            }
+          } else {
+            errorLogEntries.push(`Error Data: ${String(errorData)}`);
+          }
+        } else {
+          errorLogEntries.push('Error Data: No error data (null/undefined)');
+        }
+        
+        errorLogEntries.push(`Error Message: ${errorMessage}`);
+        
+        console.error('API Error Response:', errorLogEntries.join('\n'));
+        console.error('API Error Response (structured):', {
+          status: response.status,
+          statusText: response.statusText,
+          statusDescription: getStatusDescription(response.status),
+          hasErrorData: errorData !== null && errorData !== undefined,
+          errorDataKeys: errorData && typeof errorData === 'object' ? Object.keys(errorData) : [],
+          errorMessage: errorMessage,
+        });
+        
         throw new Error(errorMessage);
       }
     } catch (error) {
@@ -185,14 +265,14 @@ export function EditStudyModal({
             />
             <Select
               label="Schedule"
-              placeholder="Select schedule"
-              required
+              placeholder="Select schedule (optional)"
               data={scheduleOptions}
               value={formData.scheduleId}
               onChange={(value) =>
                 setFormData({ ...formData, scheduleId: value || '' })
               }
               searchable
+              clearable
             />
             <Select
               label="Resource"

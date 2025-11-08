@@ -47,8 +47,16 @@ export default function ChapterDetailPage() {
         fetch(`/api/verses?chapterId=${chapterId}`),
       ]);
 
-      if (!chapterRes.ok) throw new Error('Failed to fetch chapter');
-      if (!versesRes.ok) throw new Error('Failed to fetch verses');
+      if (!chapterRes.ok) {
+        const errorData = await chapterRes.json().catch(() => ({ error: 'Failed to fetch chapter' }));
+        throw new Error(errorData.error || errorData.details || 'Failed to fetch chapter');
+      }
+
+      if (!versesRes.ok) {
+        const errorData = await versesRes.json().catch(() => ({ error: 'Failed to fetch verses' }));
+        console.error('Verses API error:', errorData);
+        throw new Error(errorData.error || errorData.details || 'Failed to fetch verses');
+      }
 
       const chapterData = await chapterRes.json();
       const versesData = await versesRes.json();
@@ -56,7 +64,8 @@ export default function ChapterDetailPage() {
       setVerses(versesData);
     } catch (error) {
       console.error('Error fetching chapter detail:', error);
-      notifications.show({ title: 'Error', message: 'Failed to load chapter', color: 'red' });
+      const errorMessage = error instanceof Error ? error.message : 'Failed to load chapter';
+      notifications.show({ title: 'Error', message: errorMessage, color: 'red' });
     } finally {
       setLoading(false);
     }

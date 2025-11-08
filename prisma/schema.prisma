@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../lib/prisma"
+  output   = "../.prisma/client"
 }
 
 datasource db {
@@ -51,10 +51,10 @@ model Resource {
 // Study: Represents a specific study instance
 model Study {
   id         Int       @id @default(autoincrement())
-  scheduleId Int       @map("schedule_id")
+  scheduleId Int?      @map("schedule_id")
   resourceId Int       @map("resource_id")
   name       String // Name of the study
-  schedule   Schedule  @relation(fields: [scheduleId], references: [id])
+  schedule   Schedule? @relation(fields: [scheduleId], references: [id])
   resource   Resource  @relation(fields: [resourceId], references: [id])
   sessions   Session[]
 
@@ -80,10 +80,12 @@ model Verse {
   id              Int         @id @default(autoincrement())
   chapterId       Int         @map("chapter_id")
   number          Int // Verse or paragraph number
+  text            String? // Verse text content
   chapter         Chapter     @relation(fields: [chapterId], references: [id])
   startSelections Selection[] @relation("StartVerse")
   endSelections   Selection[] @relation("EndVerse")
 
+  @@unique([chapterId, number])
   @@map("verses")
 }
 
