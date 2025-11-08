@@ -104,7 +104,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { date, time, insights, stepId, selectionId } = body;
+    const { date, time, insights, reference, stepId, selectionId } = body;
 
     // Verify stepId if provided
     if (stepId) {
@@ -138,6 +138,7 @@ export async function PUT(
     if (date !== undefined) updateData.date = date ? new Date(date) : null;
     if (time !== undefined) updateData.time = time ? new Date(time) : null;
     if (insights !== undefined) updateData.insights = insights || null;
+    if (reference !== undefined) updateData.reference = reference || null;
     if (stepId !== undefined) updateData.stepId = stepId ? parseInt(stepId) : null;
     if (selectionId !== undefined) updateData.selectionId = selectionId ? parseInt(selectionId) : null;
 

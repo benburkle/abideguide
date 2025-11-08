@@ -13,10 +13,10 @@ import {
   ActionIcon,
   Badge,
   Divider,
+  Grid,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconChevronLeft, IconChevronRight, IconPlus, IconPencil } from '@tabler/icons-react';
-import { EditSessionModal } from '@/app/components/EditSessionModal';
 
 interface GuideStep {
   id: number;
@@ -38,6 +38,7 @@ interface Session {
   date: string | null;
   time: string | null;
   insights: string | null;
+  reference: string | null;
   sessionSteps?: SessionStep[];
 }
 
@@ -72,8 +73,6 @@ export default function StudyPage() {
   const [study, setStudy] = useState<Study | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
-  const [addSessionOpen, setAddSessionOpen] = useState(false);
-  const [editSessionOpen, setEditSessionOpen] = useState(false);
 
   useEffect(() => {
     if (studyId) {
@@ -204,7 +203,7 @@ export default function StudyPage() {
               <ActionIcon
                 variant="subtle"
                 size="lg"
-                onClick={() => setEditSessionOpen(true)}
+                onClick={() => router.push(`/study/${studyId}/sessions/${currentSession.id}`)}
                 aria-label="Edit session"
               >
                 <IconPencil size={20} />
@@ -230,7 +229,7 @@ export default function StudyPage() {
               <ActionIcon
                 variant="subtle"
                 size="lg"
-                onClick={() => setAddSessionOpen(true)}
+                onClick={() => router.push(`/study/${studyId}/sessions/new`)}
                 aria-label="Add session"
               >
                 <IconPlus size={20} />
@@ -238,55 +237,72 @@ export default function StudyPage() {
             </Group>
           </Group>
 
+          <Grid mb="xl">
+            <Grid.Col span={{ base: 12, sm: 4 }}>
+              {currentSession.date && (
+                <Box>
+                  <Text size="sm" c="dimmed" mb="xs">
+                    Date
+                  </Text>
+                  <Text>{new Date(currentSession.date).toLocaleDateString()}</Text>
+                </Box>
+              )}
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, sm: 4 }}>
+              {currentSession.time && (
+                <Box>
+                  <Text size="sm" c="dimmed" mb="xs">
+                    Time
+                  </Text>
+                  <Text>{new Date(currentSession.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+                </Box>
+              )}
+            </Grid.Col>
+            <Grid.Col span={{ base: 12, sm: 4 }}>
+              {currentSession.reference && (
+                <Box>
+                  <Text size="sm" c="dimmed" mb="xs">
+                    Reference
+                  </Text>
+                  <Text>{currentSession.reference}</Text>
+                </Box>
+              )}
+            </Grid.Col>
+          </Grid>
           {currentSession.insights && (
             <Box mb="xl">
               <Text size="sm" c="dimmed" mb="xs">
                 Insights
               </Text>
-              <Text>{currentSession.insights}</Text>
+              <Box
+                dangerouslySetInnerHTML={{ __html: currentSession.insights }}
+                style={{
+                  lineHeight: 1.6,
+                }}
+              />
             </Box>
           )}
 
           {currentSession.sessionSteps && currentSession.sessionSteps.length > 0 ? (
             <Box>
-              <Title order={3} mb="md" style={{ fontFamily: 'Arial, sans-serif' }}>
-                Session Steps
-              </Title>
               <Stack gap="md">
                 {currentSession.sessionSteps.map((sessionStep, index) => (
-                  <Box
-                    key={sessionStep.id}
-                    style={{
-                      padding: '16px',
-                      border: '1px solid var(--mantine-color-gray-3)',
-                      borderRadius: '4px',
-                    }}
-                  >
+                  <Box key={sessionStep.id}>
                     <Group gap="xs" mb="xs">
-                      <Badge>{index + 1}</Badge>
+                      <Text size="sm" c="dimmed">{index + 1}.</Text>
                       <Text fw={500}>{sessionStep.guideStep.name}</Text>
                     </Group>
-                    {sessionStep.guideStep.instructions && (
-                      <Text size="sm" c="dimmed" mb="xs">
-                        {sessionStep.guideStep.instructions}
-                      </Text>
-                    )}
                     {sessionStep.insights ? (
                       <Box
+                        ml="md"
+                        dangerouslySetInnerHTML={{ __html: sessionStep.insights }}
                         style={{
-                          padding: '8px',
-                          backgroundColor: 'var(--mantine-color-gray-0)',
-                          borderRadius: '4px',
-                          marginTop: '8px',
+                          fontSize: 'var(--mantine-font-size-sm)',
+                          lineHeight: 1.6,
                         }}
-                      >
-                        <Text size="sm" c="dimmed" mb="xs">
-                          Insights:
-                        </Text>
-                        <Text size="sm">{sessionStep.insights}</Text>
-                      </Box>
+                      />
                     ) : (
-                      <Text size="sm" c="dimmed" mt="xs" style={{ fontStyle: 'italic' }}>
+                      <Text size="sm" c="dimmed" ml="md" style={{ fontStyle: 'italic' }}>
                         No insights yet
                       </Text>
                     )}
@@ -310,7 +326,7 @@ export default function StudyPage() {
               <ActionIcon
                 variant="subtle"
                 size="lg"
-                onClick={() => setAddSessionOpen(true)}
+                onClick={() => router.push(`/study/${studyId}/sessions/new`)}
                 aria-label="Add session"
               >
                 <IconPlus size={20} />
@@ -319,28 +335,6 @@ export default function StudyPage() {
           </Group>
         </Box>
       )}
-
-      <EditSessionModal
-        opened={addSessionOpen}
-        onClose={() => setAddSessionOpen(false)}
-        studyId={parseInt(studyId)}
-        session={null}
-        onSaved={() => {
-          setAddSessionOpen(false);
-          fetchStudy();
-        }}
-      />
-
-      <EditSessionModal
-        opened={editSessionOpen}
-        onClose={() => setEditSessionOpen(false)}
-        studyId={parseInt(studyId)}
-        session={currentSession}
-        onSaved={() => {
-          setEditSessionOpen(false);
-          fetchStudy();
-        }}
-      />
     </Box>
   );
 }

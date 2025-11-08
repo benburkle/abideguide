@@ -47,6 +47,7 @@ export type SessionMinAggregateOutputType = {
   date: Date | null
   time: Date | null
   insights: string | null
+  reference: string | null
 }
 
 export type SessionMaxAggregateOutputType = {
@@ -57,6 +58,7 @@ export type SessionMaxAggregateOutputType = {
   date: Date | null
   time: Date | null
   insights: string | null
+  reference: string | null
 }
 
 export type SessionCountAggregateOutputType = {
@@ -67,6 +69,7 @@ export type SessionCountAggregateOutputType = {
   date: number
   time: number
   insights: number
+  reference: number
   _all: number
 }
 
@@ -93,6 +96,7 @@ export type SessionMinAggregateInputType = {
   date?: true
   time?: true
   insights?: true
+  reference?: true
 }
 
 export type SessionMaxAggregateInputType = {
@@ -103,6 +107,7 @@ export type SessionMaxAggregateInputType = {
   date?: true
   time?: true
   insights?: true
+  reference?: true
 }
 
 export type SessionCountAggregateInputType = {
@@ -113,6 +118,7 @@ export type SessionCountAggregateInputType = {
   date?: true
   time?: true
   insights?: true
+  reference?: true
   _all?: true
 }
 
@@ -210,6 +216,7 @@ export type SessionGroupByOutputType = {
   date: Date | null
   time: Date | null
   insights: string | null
+  reference: string | null
   _count: SessionCountAggregateOutputType | null
   _avg: SessionAvgAggregateOutputType | null
   _sum: SessionSumAggregateOutputType | null
@@ -243,6 +250,7 @@ export type SessionWhereInput = {
   date?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   time?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   insights?: Prisma.StringNullableFilter<"Session"> | string | null
+  reference?: Prisma.StringNullableFilter<"Session"> | string | null
   study?: Prisma.XOR<Prisma.StudyScalarRelationFilter, Prisma.StudyWhereInput>
   guideStep?: Prisma.XOR<Prisma.GuideStepNullableScalarRelationFilter, Prisma.GuideStepWhereInput> | null
   selection?: Prisma.XOR<Prisma.SelectionNullableScalarRelationFilter, Prisma.SelectionWhereInput> | null
@@ -257,6 +265,7 @@ export type SessionOrderByWithRelationInput = {
   date?: Prisma.SortOrderInput | Prisma.SortOrder
   time?: Prisma.SortOrderInput | Prisma.SortOrder
   insights?: Prisma.SortOrderInput | Prisma.SortOrder
+  reference?: Prisma.SortOrderInput | Prisma.SortOrder
   study?: Prisma.StudyOrderByWithRelationInput
   guideStep?: Prisma.GuideStepOrderByWithRelationInput
   selection?: Prisma.SelectionOrderByWithRelationInput
@@ -274,6 +283,7 @@ export type SessionWhereUniqueInput = Prisma.AtLeast<{
   date?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   time?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   insights?: Prisma.StringNullableFilter<"Session"> | string | null
+  reference?: Prisma.StringNullableFilter<"Session"> | string | null
   study?: Prisma.XOR<Prisma.StudyScalarRelationFilter, Prisma.StudyWhereInput>
   guideStep?: Prisma.XOR<Prisma.GuideStepNullableScalarRelationFilter, Prisma.GuideStepWhereInput> | null
   selection?: Prisma.XOR<Prisma.SelectionNullableScalarRelationFilter, Prisma.SelectionWhereInput> | null
@@ -288,6 +298,7 @@ export type SessionOrderByWithAggregationInput = {
   date?: Prisma.SortOrderInput | Prisma.SortOrder
   time?: Prisma.SortOrderInput | Prisma.SortOrder
   insights?: Prisma.SortOrderInput | Prisma.SortOrder
+  reference?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.SessionCountOrderByAggregateInput
   _avg?: Prisma.SessionAvgOrderByAggregateInput
   _max?: Prisma.SessionMaxOrderByAggregateInput
@@ -306,12 +317,14 @@ export type SessionScalarWhereWithAggregatesInput = {
   date?: Prisma.DateTimeNullableWithAggregatesFilter<"Session"> | Date | string | null
   time?: Prisma.DateTimeNullableWithAggregatesFilter<"Session"> | Date | string | null
   insights?: Prisma.StringNullableWithAggregatesFilter<"Session"> | string | null
+  reference?: Prisma.StringNullableWithAggregatesFilter<"Session"> | string | null
 }
 
 export type SessionCreateInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
   study: Prisma.StudyCreateNestedOneWithoutSessionsInput
   guideStep?: Prisma.GuideStepCreateNestedOneWithoutSessionsInput
   selection?: Prisma.SelectionCreateNestedOneWithoutSessionsInput
@@ -326,6 +339,7 @@ export type SessionUncheckedCreateInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
   sessionSteps?: Prisma.SessionStepUncheckedCreateNestedManyWithoutSessionInput
 }
 
@@ -333,6 +347,7 @@ export type SessionUpdateInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   study?: Prisma.StudyUpdateOneRequiredWithoutSessionsNestedInput
   guideStep?: Prisma.GuideStepUpdateOneWithoutSessionsNestedInput
   selection?: Prisma.SelectionUpdateOneWithoutSessionsNestedInput
@@ -347,6 +362,7 @@ export type SessionUncheckedUpdateInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessionSteps?: Prisma.SessionStepUncheckedUpdateManyWithoutSessionNestedInput
 }
 
@@ -358,12 +374,14 @@ export type SessionCreateManyInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
 }
 
 export type SessionUpdateManyMutationInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SessionUncheckedUpdateManyInput = {
@@ -374,6 +392,7 @@ export type SessionUncheckedUpdateManyInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SessionListRelationFilter = {
@@ -394,6 +413,7 @@ export type SessionCountOrderByAggregateInput = {
   date?: Prisma.SortOrder
   time?: Prisma.SortOrder
   insights?: Prisma.SortOrder
+  reference?: Prisma.SortOrder
 }
 
 export type SessionAvgOrderByAggregateInput = {
@@ -411,6 +431,7 @@ export type SessionMaxOrderByAggregateInput = {
   date?: Prisma.SortOrder
   time?: Prisma.SortOrder
   insights?: Prisma.SortOrder
+  reference?: Prisma.SortOrder
 }
 
 export type SessionMinOrderByAggregateInput = {
@@ -421,6 +442,7 @@ export type SessionMinOrderByAggregateInput = {
   date?: Prisma.SortOrder
   time?: Prisma.SortOrder
   insights?: Prisma.SortOrder
+  reference?: Prisma.SortOrder
 }
 
 export type SessionSumOrderByAggregateInput = {
@@ -579,6 +601,7 @@ export type SessionCreateWithoutStudyInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
   guideStep?: Prisma.GuideStepCreateNestedOneWithoutSessionsInput
   selection?: Prisma.SelectionCreateNestedOneWithoutSessionsInput
   sessionSteps?: Prisma.SessionStepCreateNestedManyWithoutSessionInput
@@ -591,6 +614,7 @@ export type SessionUncheckedCreateWithoutStudyInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
   sessionSteps?: Prisma.SessionStepUncheckedCreateNestedManyWithoutSessionInput
 }
 
@@ -630,12 +654,14 @@ export type SessionScalarWhereInput = {
   date?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   time?: Prisma.DateTimeNullableFilter<"Session"> | Date | string | null
   insights?: Prisma.StringNullableFilter<"Session"> | string | null
+  reference?: Prisma.StringNullableFilter<"Session"> | string | null
 }
 
 export type SessionCreateWithoutSelectionInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
   study: Prisma.StudyCreateNestedOneWithoutSessionsInput
   guideStep?: Prisma.GuideStepCreateNestedOneWithoutSessionsInput
   sessionSteps?: Prisma.SessionStepCreateNestedManyWithoutSessionInput
@@ -648,6 +674,7 @@ export type SessionUncheckedCreateWithoutSelectionInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
   sessionSteps?: Prisma.SessionStepUncheckedCreateNestedManyWithoutSessionInput
 }
 
@@ -680,6 +707,7 @@ export type SessionCreateWithoutGuideStepInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
   study: Prisma.StudyCreateNestedOneWithoutSessionsInput
   selection?: Prisma.SelectionCreateNestedOneWithoutSessionsInput
   sessionSteps?: Prisma.SessionStepCreateNestedManyWithoutSessionInput
@@ -692,6 +720,7 @@ export type SessionUncheckedCreateWithoutGuideStepInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
   sessionSteps?: Prisma.SessionStepUncheckedCreateNestedManyWithoutSessionInput
 }
 
@@ -724,6 +753,7 @@ export type SessionCreateWithoutSessionStepsInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
   study: Prisma.StudyCreateNestedOneWithoutSessionsInput
   guideStep?: Prisma.GuideStepCreateNestedOneWithoutSessionsInput
   selection?: Prisma.SelectionCreateNestedOneWithoutSessionsInput
@@ -737,6 +767,7 @@ export type SessionUncheckedCreateWithoutSessionStepsInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
 }
 
 export type SessionCreateOrConnectWithoutSessionStepsInput = {
@@ -759,6 +790,7 @@ export type SessionUpdateWithoutSessionStepsInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   study?: Prisma.StudyUpdateOneRequiredWithoutSessionsNestedInput
   guideStep?: Prisma.GuideStepUpdateOneWithoutSessionsNestedInput
   selection?: Prisma.SelectionUpdateOneWithoutSessionsNestedInput
@@ -772,6 +804,7 @@ export type SessionUncheckedUpdateWithoutSessionStepsInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SessionCreateManyStudyInput = {
@@ -781,12 +814,14 @@ export type SessionCreateManyStudyInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
 }
 
 export type SessionUpdateWithoutStudyInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guideStep?: Prisma.GuideStepUpdateOneWithoutSessionsNestedInput
   selection?: Prisma.SelectionUpdateOneWithoutSessionsNestedInput
   sessionSteps?: Prisma.SessionStepUpdateManyWithoutSessionNestedInput
@@ -799,6 +834,7 @@ export type SessionUncheckedUpdateWithoutStudyInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessionSteps?: Prisma.SessionStepUncheckedUpdateManyWithoutSessionNestedInput
 }
 
@@ -809,6 +845,7 @@ export type SessionUncheckedUpdateManyWithoutStudyInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SessionCreateManySelectionInput = {
@@ -818,12 +855,14 @@ export type SessionCreateManySelectionInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
 }
 
 export type SessionUpdateWithoutSelectionInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   study?: Prisma.StudyUpdateOneRequiredWithoutSessionsNestedInput
   guideStep?: Prisma.GuideStepUpdateOneWithoutSessionsNestedInput
   sessionSteps?: Prisma.SessionStepUpdateManyWithoutSessionNestedInput
@@ -836,6 +875,7 @@ export type SessionUncheckedUpdateWithoutSelectionInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessionSteps?: Prisma.SessionStepUncheckedUpdateManyWithoutSessionNestedInput
 }
 
@@ -846,6 +886,7 @@ export type SessionUncheckedUpdateManyWithoutSelectionInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SessionCreateManyGuideStepInput = {
@@ -855,12 +896,14 @@ export type SessionCreateManyGuideStepInput = {
   date?: Date | string | null
   time?: Date | string | null
   insights?: string | null
+  reference?: string | null
 }
 
 export type SessionUpdateWithoutGuideStepInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   study?: Prisma.StudyUpdateOneRequiredWithoutSessionsNestedInput
   selection?: Prisma.SelectionUpdateOneWithoutSessionsNestedInput
   sessionSteps?: Prisma.SessionStepUpdateManyWithoutSessionNestedInput
@@ -873,6 +916,7 @@ export type SessionUncheckedUpdateWithoutGuideStepInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   sessionSteps?: Prisma.SessionStepUncheckedUpdateManyWithoutSessionNestedInput
 }
 
@@ -883,6 +927,7 @@ export type SessionUncheckedUpdateManyWithoutGuideStepInput = {
   date?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   time?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  reference?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -924,6 +969,7 @@ export type SessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   date?: boolean
   time?: boolean
   insights?: boolean
+  reference?: boolean
   study?: boolean | Prisma.StudyDefaultArgs<ExtArgs>
   guideStep?: boolean | Prisma.Session$guideStepArgs<ExtArgs>
   selection?: boolean | Prisma.Session$selectionArgs<ExtArgs>
@@ -939,6 +985,7 @@ export type SessionSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   date?: boolean
   time?: boolean
   insights?: boolean
+  reference?: boolean
   study?: boolean | Prisma.StudyDefaultArgs<ExtArgs>
   guideStep?: boolean | Prisma.Session$guideStepArgs<ExtArgs>
   selection?: boolean | Prisma.Session$selectionArgs<ExtArgs>
@@ -952,6 +999,7 @@ export type SessionSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   date?: boolean
   time?: boolean
   insights?: boolean
+  reference?: boolean
   study?: boolean | Prisma.StudyDefaultArgs<ExtArgs>
   guideStep?: boolean | Prisma.Session$guideStepArgs<ExtArgs>
   selection?: boolean | Prisma.Session$selectionArgs<ExtArgs>
@@ -965,9 +1013,10 @@ export type SessionSelectScalar = {
   date?: boolean
   time?: boolean
   insights?: boolean
+  reference?: boolean
 }
 
-export type SessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studyId" | "stepId" | "selectionId" | "date" | "time" | "insights", ExtArgs["result"]["session"]>
+export type SessionOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "studyId" | "stepId" | "selectionId" | "date" | "time" | "insights" | "reference", ExtArgs["result"]["session"]>
 export type SessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   study?: boolean | Prisma.StudyDefaultArgs<ExtArgs>
   guideStep?: boolean | Prisma.Session$guideStepArgs<ExtArgs>
@@ -1002,6 +1051,7 @@ export type $SessionPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     date: Date | null
     time: Date | null
     insights: string | null
+    reference: string | null
   }, ExtArgs["result"]["session"]>
   composites: {}
 }
@@ -1436,6 +1486,7 @@ export interface SessionFieldRefs {
   readonly date: Prisma.FieldRef<"Session", 'DateTime'>
   readonly time: Prisma.FieldRef<"Session", 'DateTime'>
   readonly insights: Prisma.FieldRef<"Session", 'String'>
+  readonly reference: Prisma.FieldRef<"Session", 'String'>
 }
     
 

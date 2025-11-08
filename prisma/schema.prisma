@@ -146,6 +146,7 @@ model Session {
   date         DateTime? // Date of the session
   time         DateTime? // Time of the session
   insights     String? // Notes or insights from the session
+  reference    String? // Reference text for the session
   study        Study         @relation(fields: [studyId], references: [id])
   guideStep    GuideStep?    @relation("SessionGuideStep", fields: [stepId], references: [id])
   selection    Selection?    @relation(fields: [selectionId], references: [id])

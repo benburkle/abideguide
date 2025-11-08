@@ -25,6 +25,7 @@ interface Session {
   date: string | null;
   time: string | null;
   insights: string | null;
+  reference: string | null;
   stepId?: number | null;
   selectionId?: number | null;
   sessionSteps?: SessionStep[];
@@ -49,6 +50,7 @@ export function EditSessionModal({
   const [date, setDate] = useState<string>('');
   const [time, setTime] = useState<string>('');
   const [insights, setInsights] = useState<string>('');
+  const [reference, setReference] = useState<string>('');
   const [sessionSteps, setSessionSteps] = useState<SessionStep[]>([]);
   const [helpModalOpen, setHelpModalOpen] = useState(false);
   const [selectedGuideStep, setSelectedGuideStep] = useState<GuideStep | null>(null);
@@ -64,6 +66,7 @@ export function EditSessionModal({
         setDate(now.toISOString().split('T')[0]);
         setTime(now.toTimeString().slice(0, 5));
         setInsights('');
+        setReference('');
         fetchStudyGuideSteps();
       }
     }
@@ -79,6 +82,7 @@ export function EditSessionModal({
         setDate(sessionData.date ? new Date(sessionData.date).toISOString().split('T')[0] : '');
         setTime(sessionData.time ? new Date(sessionData.time).toTimeString().slice(0, 5) : '');
         setInsights(sessionData.insights || '');
+        setReference(sessionData.reference || '');
         setSessionSteps(sessionData.sessionSteps || []);
       }
     } catch (error) {
@@ -136,12 +140,14 @@ export function EditSessionModal({
             date: dateOnly,
             time: dateTime,
             insights: insights || null,
+            reference: reference || null,
           }
         : {
             studyId,
             date: dateOnly,
             time: dateTime,
             insights: insights || null,
+            reference: reference || null,
           };
 
       const response = await fetch(url, {
@@ -238,6 +244,12 @@ export function EditSessionModal({
               onChange={(e) => setInsights(e.target.value)}
               minRows={4}
               autosize
+            />
+            <TextInput
+              label="Reference"
+              placeholder="Enter reference text"
+              value={reference}
+              onChange={(e) => setReference(e.target.value)}
             />
 
             {sessionSteps.length > 0 && (

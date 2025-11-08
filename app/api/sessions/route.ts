@@ -102,7 +102,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { studyId, date, time, insights, stepId, selectionId } = body;
+    const { studyId, date, time, insights, reference, stepId, selectionId } = body;
 
     if (!studyId) {
       return NextResponse.json(
@@ -169,6 +169,7 @@ export async function POST(request: Request) {
         date: date ? new Date(date) : null,
         time: time ? new Date(time) : null,
         insights: insights || null,
+        reference: reference || null,
         stepId: stepId ? parseInt(stepId) : null,
         selectionId: selectionId ? parseInt(selectionId) : null,
       },

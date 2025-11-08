@@ -183,7 +183,8 @@ export const SessionScalarFieldEnum = {
   selectionId: 'selectionId',
   date: 'date',
   time: 'time',
-  insights: 'insights'
+  insights: 'insights',
+  reference: 'reference'
 } as const
 
 export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeof SessionScalarFieldEnum]
