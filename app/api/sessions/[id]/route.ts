@@ -1,0 +1,247 @@
+import { NextResponse } from 'next/server';
+import { prisma } from '@/lib/prisma';
+
+export async function GET(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    let session = await prisma.session.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        study: {
+          include: {
+            guide: {
+              include: {
+                guideSteps: {
+                  orderBy: {
+                    index: 'asc',
+                  },
+                },
+              },
+            },
+          },
+        },
+        guideStep: true,
+        selection: true,
+        sessionSteps: {
+          include: {
+            guideStep: true,
+          },
+          orderBy: {
+            guideStep: {
+              index: 'asc',
+            },
+          },
+        },
+      },
+    });
+
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Session not found' },
+        { status: 404 }
+      );
+    }
+
+    // If no session steps exist and study has a guide, create them
+    if (session.sessionSteps.length === 0 && session.study.guide && session.study.guide.guideSteps.length > 0) {
+      await prisma.sessionStep.createMany({
+        data: session.study.guide.guideSteps.map((guideStep) => ({
+          sessionId: session!.id,
+          guideStepId: guideStep.id,
+        })),
+      });
+
+      // Fetch the session again with the newly created steps
+      session = await prisma.session.findUnique({
+        where: { id: parseInt(id) },
+        include: {
+          study: {
+            include: {
+              guide: {
+                include: {
+                  guideSteps: {
+                    orderBy: {
+                      index: 'asc',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          guideStep: true,
+          selection: true,
+          sessionSteps: {
+            include: {
+              guideStep: true,
+            },
+            orderBy: {
+              guideStep: {
+                index: 'asc',
+              },
+            },
+          },
+        },
+      });
+    }
+
+    return NextResponse.json(session);
+  } catch (error) {
+    console.error('Error fetching session:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch session', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const body = await request.json();
+    const { date, time, insights, stepId, selectionId } = body;
+
+    // Verify stepId if provided
+    if (stepId) {
+      const guideStep = await prisma.guideStep.findUnique({
+        where: { id: parseInt(stepId) },
+      });
+
+      if (!guideStep) {
+        return NextResponse.json(
+          { error: 'Guide step not found', details: `Guide step with ID ${stepId} does not exist` },
+          { status: 404 }
+        );
+      }
+    }
+
+    // Verify selectionId if provided
+    if (selectionId) {
+      const selection = await prisma.selection.findUnique({
+        where: { id: parseInt(selectionId) },
+      });
+
+      if (!selection) {
+        return NextResponse.json(
+          { error: 'Selection not found', details: `Selection with ID ${selectionId} does not exist` },
+          { status: 404 }
+        );
+      }
+    }
+
+    const updateData: any = {};
+    if (date !== undefined) updateData.date = date ? new Date(date) : null;
+    if (time !== undefined) updateData.time = time ? new Date(time) : null;
+    if (insights !== undefined) updateData.insights = insights || null;
+    if (stepId !== undefined) updateData.stepId = stepId ? parseInt(stepId) : null;
+    if (selectionId !== undefined) updateData.selectionId = selectionId ? parseInt(selectionId) : null;
+
+    let session = await prisma.session.update({
+      where: { id: parseInt(id) },
+      data: updateData,
+      include: {
+        study: {
+          include: {
+            guide: {
+              include: {
+                guideSteps: {
+                  orderBy: {
+                    index: 'asc',
+                  },
+                },
+              },
+            },
+          },
+        },
+        guideStep: true,
+        selection: true,
+        sessionSteps: {
+          include: {
+            guideStep: true,
+          },
+          orderBy: {
+            guideStep: {
+              index: 'asc',
+            },
+          },
+        },
+      },
+    });
+
+    // If no session steps exist and study has a guide, create them
+    if (session.sessionSteps.length === 0 && session.study.guide && session.study.guide.guideSteps.length > 0) {
+      await prisma.sessionStep.createMany({
+        data: session.study.guide.guideSteps.map((guideStep) => ({
+          sessionId: session.id,
+          guideStepId: guideStep.id,
+        })),
+      });
+
+      // Fetch the session again with the newly created steps
+      session = await prisma.session.findUnique({
+        where: { id: parseInt(id) },
+        include: {
+          study: {
+            include: {
+              guide: {
+                include: {
+                  guideSteps: {
+                    orderBy: {
+                      index: 'asc',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          guideStep: true,
+          selection: true,
+          sessionSteps: {
+            include: {
+              guideStep: true,
+            },
+            orderBy: {
+              guideStep: {
+                index: 'asc',
+              },
+            },
+          },
+        },
+      });
+    }
+
+    return NextResponse.json(session);
+  } catch (error) {
+    console.error('Error updating session:', error);
+    return NextResponse.json(
+      { error: 'Failed to update session', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    await prisma.session.delete({
+      where: { id: parseInt(id) },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error('Error deleting session:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete session', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
+  }
+}
+

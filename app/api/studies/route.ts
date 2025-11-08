@@ -30,7 +30,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, scheduleId, resourceId } = body;
+    const { name, scheduleId, resourceId, guideId } = body;
 
     console.log('Creating study with data:', { name, scheduleId, resourceId });
 
@@ -85,11 +85,29 @@ export async function POST(request: Request) {
       }
     }
 
+    // Check if guide exists if provided
+    if (guideId) {
+      const parsedGuideId = parseInt(guideId);
+      if (!isNaN(parsedGuideId)) {
+        const guide = await prisma.guide.findUnique({
+          where: { id: parsedGuideId },
+        });
+
+        if (!guide) {
+          return NextResponse.json(
+            { error: 'Guide not found', details: `Guide with ID ${parsedGuideId} does not exist` },
+            { status: 404 }
+          );
+        }
+      }
+    }
+
     const study = await prisma.study.create({
       data: {
         name: name.trim(),
         scheduleId: scheduleId ? parseInt(scheduleId) : null,
         resourceId: parsedResourceId,
+        guideId: guideId ? parseInt(guideId) : null,
       },
       include: {
         schedule: true,

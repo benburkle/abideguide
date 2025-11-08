@@ -53,9 +53,11 @@ model Study {
   id         Int       @id @default(autoincrement())
   scheduleId Int?      @map("schedule_id")
   resourceId Int       @map("resource_id")
+  guideId    Int?      @map("guide_id")
   name       String // Name of the study
   schedule   Schedule? @relation(fields: [scheduleId], references: [id])
   resource   Resource  @relation(fields: [resourceId], references: [id])
+  guide      Guide?    @relation(fields: [guideId], references: [id])
   sessions   Session[]
 
   @@map("studies")
@@ -114,6 +116,7 @@ model Guide {
   levelOfResource String?     @map("level_of_resource") // Level or difficulty of the resource
   amtOfResource   String?     @map("amt_of_resource") // Amount of resource associated with the guide
   guideSteps      GuideStep[]
+  studies         Study[]
 
   @@map("guides")
 }
@@ -156,6 +159,7 @@ model SessionStep {
   id          Int       @id @default(autoincrement())
   sessionId   Int       @map("session_id")
   guideStepId Int       @map("guide_step_id")
+  insights    String?   // User's insights or notes for this step
   session     Session   @relation(fields: [sessionId], references: [id])
   guideStep   GuideStep @relation(fields: [guideStepId], references: [id])
 

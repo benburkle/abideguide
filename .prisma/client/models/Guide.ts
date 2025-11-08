@@ -208,6 +208,7 @@ export type GuideWhereInput = {
   levelOfResource?: Prisma.StringNullableFilter<"Guide"> | string | null
   amtOfResource?: Prisma.StringNullableFilter<"Guide"> | string | null
   guideSteps?: Prisma.GuideStepListRelationFilter
+  studies?: Prisma.StudyListRelationFilter
 }
 
 export type GuideOrderByWithRelationInput = {
@@ -216,6 +217,7 @@ export type GuideOrderByWithRelationInput = {
   levelOfResource?: Prisma.SortOrderInput | Prisma.SortOrder
   amtOfResource?: Prisma.SortOrderInput | Prisma.SortOrder
   guideSteps?: Prisma.GuideStepOrderByRelationAggregateInput
+  studies?: Prisma.StudyOrderByRelationAggregateInput
 }
 
 export type GuideWhereUniqueInput = Prisma.AtLeast<{
@@ -227,6 +229,7 @@ export type GuideWhereUniqueInput = Prisma.AtLeast<{
   levelOfResource?: Prisma.StringNullableFilter<"Guide"> | string | null
   amtOfResource?: Prisma.StringNullableFilter<"Guide"> | string | null
   guideSteps?: Prisma.GuideStepListRelationFilter
+  studies?: Prisma.StudyListRelationFilter
 }, "id">
 
 export type GuideOrderByWithAggregationInput = {
@@ -256,6 +259,7 @@ export type GuideCreateInput = {
   levelOfResource?: string | null
   amtOfResource?: string | null
   guideSteps?: Prisma.GuideStepCreateNestedManyWithoutGuideInput
+  studies?: Prisma.StudyCreateNestedManyWithoutGuideInput
 }
 
 export type GuideUncheckedCreateInput = {
@@ -264,6 +268,7 @@ export type GuideUncheckedCreateInput = {
   levelOfResource?: string | null
   amtOfResource?: string | null
   guideSteps?: Prisma.GuideStepUncheckedCreateNestedManyWithoutGuideInput
+  studies?: Prisma.StudyUncheckedCreateNestedManyWithoutGuideInput
 }
 
 export type GuideUpdateInput = {
@@ -271,6 +276,7 @@ export type GuideUpdateInput = {
   levelOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amtOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guideSteps?: Prisma.GuideStepUpdateManyWithoutGuideNestedInput
+  studies?: Prisma.StudyUpdateManyWithoutGuideNestedInput
 }
 
 export type GuideUncheckedUpdateInput = {
@@ -279,6 +285,7 @@ export type GuideUncheckedUpdateInput = {
   levelOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amtOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guideSteps?: Prisma.GuideStepUncheckedUpdateManyWithoutGuideNestedInput
+  studies?: Prisma.StudyUncheckedUpdateManyWithoutGuideNestedInput
 }
 
 export type GuideCreateManyInput = {
@@ -299,6 +306,11 @@ export type GuideUncheckedUpdateManyInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   levelOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amtOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+}
+
+export type GuideNullableScalarRelationFilter = {
+  is?: Prisma.GuideWhereInput | null
+  isNot?: Prisma.GuideWhereInput | null
 }
 
 export type GuideCountOrderByAggregateInput = {
@@ -335,6 +347,22 @@ export type GuideScalarRelationFilter = {
   isNot?: Prisma.GuideWhereInput
 }
 
+export type GuideCreateNestedOneWithoutStudiesInput = {
+  create?: Prisma.XOR<Prisma.GuideCreateWithoutStudiesInput, Prisma.GuideUncheckedCreateWithoutStudiesInput>
+  connectOrCreate?: Prisma.GuideCreateOrConnectWithoutStudiesInput
+  connect?: Prisma.GuideWhereUniqueInput
+}
+
+export type GuideUpdateOneWithoutStudiesNestedInput = {
+  create?: Prisma.XOR<Prisma.GuideCreateWithoutStudiesInput, Prisma.GuideUncheckedCreateWithoutStudiesInput>
+  connectOrCreate?: Prisma.GuideCreateOrConnectWithoutStudiesInput
+  upsert?: Prisma.GuideUpsertWithoutStudiesInput
+  disconnect?: Prisma.GuideWhereInput | boolean
+  delete?: Prisma.GuideWhereInput | boolean
+  connect?: Prisma.GuideWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GuideUpdateToOneWithWhereWithoutStudiesInput, Prisma.GuideUpdateWithoutStudiesInput>, Prisma.GuideUncheckedUpdateWithoutStudiesInput>
+}
+
 export type GuideCreateNestedOneWithoutGuideStepsInput = {
   create?: Prisma.XOR<Prisma.GuideCreateWithoutGuideStepsInput, Prisma.GuideUncheckedCreateWithoutGuideStepsInput>
   connectOrCreate?: Prisma.GuideCreateOrConnectWithoutGuideStepsInput
@@ -349,10 +377,57 @@ export type GuideUpdateOneRequiredWithoutGuideStepsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.GuideUpdateToOneWithWhereWithoutGuideStepsInput, Prisma.GuideUpdateWithoutGuideStepsInput>, Prisma.GuideUncheckedUpdateWithoutGuideStepsInput>
 }
 
+export type GuideCreateWithoutStudiesInput = {
+  name: string
+  levelOfResource?: string | null
+  amtOfResource?: string | null
+  guideSteps?: Prisma.GuideStepCreateNestedManyWithoutGuideInput
+}
+
+export type GuideUncheckedCreateWithoutStudiesInput = {
+  id?: number
+  name: string
+  levelOfResource?: string | null
+  amtOfResource?: string | null
+  guideSteps?: Prisma.GuideStepUncheckedCreateNestedManyWithoutGuideInput
+}
+
+export type GuideCreateOrConnectWithoutStudiesInput = {
+  where: Prisma.GuideWhereUniqueInput
+  create: Prisma.XOR<Prisma.GuideCreateWithoutStudiesInput, Prisma.GuideUncheckedCreateWithoutStudiesInput>
+}
+
+export type GuideUpsertWithoutStudiesInput = {
+  update: Prisma.XOR<Prisma.GuideUpdateWithoutStudiesInput, Prisma.GuideUncheckedUpdateWithoutStudiesInput>
+  create: Prisma.XOR<Prisma.GuideCreateWithoutStudiesInput, Prisma.GuideUncheckedCreateWithoutStudiesInput>
+  where?: Prisma.GuideWhereInput
+}
+
+export type GuideUpdateToOneWithWhereWithoutStudiesInput = {
+  where?: Prisma.GuideWhereInput
+  data: Prisma.XOR<Prisma.GuideUpdateWithoutStudiesInput, Prisma.GuideUncheckedUpdateWithoutStudiesInput>
+}
+
+export type GuideUpdateWithoutStudiesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  levelOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amtOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guideSteps?: Prisma.GuideStepUpdateManyWithoutGuideNestedInput
+}
+
+export type GuideUncheckedUpdateWithoutStudiesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  levelOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amtOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  guideSteps?: Prisma.GuideStepUncheckedUpdateManyWithoutGuideNestedInput
+}
+
 export type GuideCreateWithoutGuideStepsInput = {
   name: string
   levelOfResource?: string | null
   amtOfResource?: string | null
+  studies?: Prisma.StudyCreateNestedManyWithoutGuideInput
 }
 
 export type GuideUncheckedCreateWithoutGuideStepsInput = {
@@ -360,6 +435,7 @@ export type GuideUncheckedCreateWithoutGuideStepsInput = {
   name: string
   levelOfResource?: string | null
   amtOfResource?: string | null
+  studies?: Prisma.StudyUncheckedCreateNestedManyWithoutGuideInput
 }
 
 export type GuideCreateOrConnectWithoutGuideStepsInput = {
@@ -382,6 +458,7 @@ export type GuideUpdateWithoutGuideStepsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   levelOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amtOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  studies?: Prisma.StudyUpdateManyWithoutGuideNestedInput
 }
 
 export type GuideUncheckedUpdateWithoutGuideStepsInput = {
@@ -389,6 +466,7 @@ export type GuideUncheckedUpdateWithoutGuideStepsInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   levelOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amtOfResource?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  studies?: Prisma.StudyUncheckedUpdateManyWithoutGuideNestedInput
 }
 
 
@@ -398,10 +476,12 @@ export type GuideUncheckedUpdateWithoutGuideStepsInput = {
 
 export type GuideCountOutputType = {
   guideSteps: number
+  studies: number
 }
 
 export type GuideCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guideSteps?: boolean | GuideCountOutputTypeCountGuideStepsArgs
+  studies?: boolean | GuideCountOutputTypeCountStudiesArgs
 }
 
 /**
@@ -421,6 +501,13 @@ export type GuideCountOutputTypeCountGuideStepsArgs<ExtArgs extends runtime.Type
   where?: Prisma.GuideStepWhereInput
 }
 
+/**
+ * GuideCountOutputType without action
+ */
+export type GuideCountOutputTypeCountStudiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StudyWhereInput
+}
+
 
 export type GuideSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -428,6 +515,7 @@ export type GuideSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   levelOfResource?: boolean
   amtOfResource?: boolean
   guideSteps?: boolean | Prisma.Guide$guideStepsArgs<ExtArgs>
+  studies?: boolean | Prisma.Guide$studiesArgs<ExtArgs>
   _count?: boolean | Prisma.GuideCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["guide"]>
 
@@ -455,6 +543,7 @@ export type GuideSelectScalar = {
 export type GuideOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "levelOfResource" | "amtOfResource", ExtArgs["result"]["guide"]>
 export type GuideInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guideSteps?: boolean | Prisma.Guide$guideStepsArgs<ExtArgs>
+  studies?: boolean | Prisma.Guide$studiesArgs<ExtArgs>
   _count?: boolean | Prisma.GuideCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type GuideIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -464,6 +553,7 @@ export type $GuidePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   name: "Guide"
   objects: {
     guideSteps: Prisma.$GuideStepPayload<ExtArgs>[]
+    studies: Prisma.$StudyPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -865,6 +955,7 @@ readonly fields: GuideFieldRefs;
 export interface Prisma__GuideClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   guideSteps<T extends Prisma.Guide$guideStepsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guide$guideStepsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$GuideStepPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  studies<T extends Prisma.Guide$studiesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Guide$studiesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StudyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1305,6 +1396,30 @@ export type Guide$guideStepsArgs<ExtArgs extends runtime.Types.Extensions.Intern
   take?: number
   skip?: number
   distinct?: Prisma.GuideStepScalarFieldEnum | Prisma.GuideStepScalarFieldEnum[]
+}
+
+/**
+ * Guide.studies
+ */
+export type Guide$studiesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Study
+   */
+  select?: Prisma.StudySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Study
+   */
+  omit?: Prisma.StudyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StudyInclude<ExtArgs> | null
+  where?: Prisma.StudyWhereInput
+  orderBy?: Prisma.StudyOrderByWithRelationInput | Prisma.StudyOrderByWithRelationInput[]
+  cursor?: Prisma.StudyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StudyScalarFieldEnum | Prisma.StudyScalarFieldEnum[]
 }
 
 /**

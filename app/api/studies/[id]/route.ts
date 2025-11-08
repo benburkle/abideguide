@@ -7,11 +7,20 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const study = await prisma.study.findUnique({
+    let study = await prisma.study.findUnique({
       where: { id: parseInt(id) },
       include: {
         schedule: true,
         resource: true,
+        guide: {
+          include: {
+            guideSteps: {
+              orderBy: {
+                index: 'asc',
+              },
+            },
+          },
+        },
         sessions: {
           orderBy: {
             date: 'desc',
@@ -41,6 +50,57 @@ export async function GET(
       );
     }
 
+    // For each session without steps, create them from guide steps
+    if (study.guide && study.guide.guideSteps.length > 0) {
+      for (const session of study.sessions) {
+        if (session.sessionSteps.length === 0) {
+          await prisma.sessionStep.createMany({
+            data: study.guide.guideSteps.map((guideStep) => ({
+              sessionId: session.id,
+              guideStepId: guideStep.id,
+            })),
+          });
+        }
+      }
+    }
+
+    // Fetch the study again to include newly created session steps
+    study = await prisma.study.findUnique({
+      where: { id: parseInt(id) },
+      include: {
+        schedule: true,
+        resource: true,
+        guide: {
+          include: {
+            guideSteps: {
+              orderBy: {
+                index: 'asc',
+              },
+            },
+          },
+        },
+        sessions: {
+          orderBy: {
+            date: 'desc',
+          },
+          include: {
+            sessionSteps: {
+              include: {
+                guideStep: true,
+              },
+              orderBy: {
+                guideStep: {
+                  index: 'asc',
+                },
+              },
+            },
+            guideStep: true,
+            selection: true,
+          },
+        },
+      },
+    });
+
     return NextResponse.json(study);
   } catch (error) {
     console.error('Error fetching study:', error);
@@ -58,7 +118,7 @@ export async function PUT(
   try {
     const { id } = await params;
     const body = await request.json();
-    const { name, scheduleId, resourceId } = body;
+    const { name, scheduleId, resourceId, guideId } = body;
 
     if (!name || typeof name !== 'string' || name.trim() === '') {
       return NextResponse.json(
@@ -82,12 +142,30 @@ export async function PUT(
       );
     }
 
+    // Check if guide exists if provided
+    if (guideId) {
+      const parsedGuideId = parseInt(guideId);
+      if (!isNaN(parsedGuideId)) {
+        const guide = await prisma.guide.findUnique({
+          where: { id: parsedGuideId },
+        });
+
+        if (!guide) {
+          return NextResponse.json(
+            { error: 'Guide not found', details: `Guide with ID ${parsedGuideId} does not exist` },
+            { status: 404 }
+          );
+        }
+      }
+    }
+
     const study = await prisma.study.update({
       where: { id: parseInt(id) },
       data: {
         name: name.trim(),
         scheduleId: scheduleId ? parseInt(scheduleId) : null,
         resourceId: parsedResourceId,
+        guideId: guideId ? parseInt(guideId) : null,
       },
       include: {
         schedule: true,

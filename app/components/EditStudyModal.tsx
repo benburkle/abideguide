@@ -41,11 +41,17 @@ interface Resource {
   type: string;
 }
 
+interface Guide {
+  id: number;
+  name: string;
+}
+
 interface Study {
   id: number;
   name: string;
   scheduleId: number | null;
   resourceId: number;
+  guideId: number | null;
   schedule: Schedule | null;
   resource: Resource;
   sessions: any[];
@@ -67,11 +73,13 @@ export function EditStudyModal({
   const [loading, setLoading] = useState(false);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [resources, setResources] = useState<Resource[]>([]);
+  const [guides, setGuides] = useState<Guide[]>([]);
   const [loadingOptions, setLoadingOptions] = useState(true);
   const [formData, setFormData] = useState({
     name: '',
     scheduleId: '',
     resourceId: '',
+    guideId: '',
   });
 
   useEffect(() => {
@@ -82,12 +90,14 @@ export function EditStudyModal({
           name: study.name || '',
           scheduleId: study.scheduleId ? study.scheduleId.toString() : '',
           resourceId: study.resourceId.toString(),
+          guideId: study.guideId ? study.guideId.toString() : '',
         });
       } else {
         setFormData({
           name: '',
           scheduleId: '',
           resourceId: '',
+          guideId: '',
         });
       }
     }
@@ -96,9 +106,10 @@ export function EditStudyModal({
   const fetchOptions = async () => {
     try {
       setLoadingOptions(true);
-      const [schedulesRes, resourcesRes] = await Promise.all([
+      const [schedulesRes, resourcesRes, guidesRes] = await Promise.all([
         fetch('/api/schedules'),
         fetch('/api/resources'),
+        fetch('/api/guides'),
       ]);
 
       if (schedulesRes.ok) {
@@ -109,6 +120,11 @@ export function EditStudyModal({
       if (resourcesRes.ok) {
         const resourcesData = await resourcesRes.json();
         setResources(resourcesData);
+      }
+
+      if (guidesRes.ok) {
+        const guidesData = await guidesRes.json();
+        setGuides(guidesData);
       }
     } catch (error) {
       console.error('Error fetching options:', error);
@@ -129,6 +145,7 @@ export function EditStudyModal({
         name: formData.name,
         scheduleId: formData.scheduleId || null,
         resourceId: formData.resourceId,
+        guideId: formData.guideId || null,
       };
 
       console.log('Submitting study:', { url, method, body: requestBody });
@@ -242,6 +259,11 @@ export function EditStudyModal({
     label: `${r.name} (${r.type})`,
   }));
 
+  const guideOptions = guides.map((g) => ({
+    value: g.id.toString(),
+    label: g.name,
+  }));
+
   return (
     <Modal
       opened={opened}
@@ -284,6 +306,17 @@ export function EditStudyModal({
                 setFormData({ ...formData, resourceId: value || '' })
               }
               searchable
+            />
+            <Select
+              label="Guide"
+              placeholder="Select guide (optional)"
+              data={guideOptions}
+              value={formData.guideId}
+              onChange={(value) =>
+                setFormData({ ...formData, guideId: value || '' })
+              }
+              searchable
+              clearable
             />
             <Group justify="flex-end" mt="md">
               <Button variant="outline" onClick={onClose}>

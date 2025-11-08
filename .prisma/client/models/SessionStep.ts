@@ -41,18 +41,21 @@ export type SessionStepMinAggregateOutputType = {
   id: number | null
   sessionId: number | null
   guideStepId: number | null
+  insights: string | null
 }
 
 export type SessionStepMaxAggregateOutputType = {
   id: number | null
   sessionId: number | null
   guideStepId: number | null
+  insights: string | null
 }
 
 export type SessionStepCountAggregateOutputType = {
   id: number
   sessionId: number
   guideStepId: number
+  insights: number
   _all: number
 }
 
@@ -73,18 +76,21 @@ export type SessionStepMinAggregateInputType = {
   id?: true
   sessionId?: true
   guideStepId?: true
+  insights?: true
 }
 
 export type SessionStepMaxAggregateInputType = {
   id?: true
   sessionId?: true
   guideStepId?: true
+  insights?: true
 }
 
 export type SessionStepCountAggregateInputType = {
   id?: true
   sessionId?: true
   guideStepId?: true
+  insights?: true
   _all?: true
 }
 
@@ -178,6 +184,7 @@ export type SessionStepGroupByOutputType = {
   id: number
   sessionId: number
   guideStepId: number
+  insights: string | null
   _count: SessionStepCountAggregateOutputType | null
   _avg: SessionStepAvgAggregateOutputType | null
   _sum: SessionStepSumAggregateOutputType | null
@@ -207,6 +214,7 @@ export type SessionStepWhereInput = {
   id?: Prisma.IntFilter<"SessionStep"> | number
   sessionId?: Prisma.IntFilter<"SessionStep"> | number
   guideStepId?: Prisma.IntFilter<"SessionStep"> | number
+  insights?: Prisma.StringNullableFilter<"SessionStep"> | string | null
   session?: Prisma.XOR<Prisma.SessionScalarRelationFilter, Prisma.SessionWhereInput>
   guideStep?: Prisma.XOR<Prisma.GuideStepScalarRelationFilter, Prisma.GuideStepWhereInput>
 }
@@ -215,6 +223,7 @@ export type SessionStepOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   sessionId?: Prisma.SortOrder
   guideStepId?: Prisma.SortOrder
+  insights?: Prisma.SortOrderInput | Prisma.SortOrder
   session?: Prisma.SessionOrderByWithRelationInput
   guideStep?: Prisma.GuideStepOrderByWithRelationInput
 }
@@ -226,6 +235,7 @@ export type SessionStepWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.SessionStepWhereInput | Prisma.SessionStepWhereInput[]
   sessionId?: Prisma.IntFilter<"SessionStep"> | number
   guideStepId?: Prisma.IntFilter<"SessionStep"> | number
+  insights?: Prisma.StringNullableFilter<"SessionStep"> | string | null
   session?: Prisma.XOR<Prisma.SessionScalarRelationFilter, Prisma.SessionWhereInput>
   guideStep?: Prisma.XOR<Prisma.GuideStepScalarRelationFilter, Prisma.GuideStepWhereInput>
 }, "id">
@@ -234,6 +244,7 @@ export type SessionStepOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   sessionId?: Prisma.SortOrder
   guideStepId?: Prisma.SortOrder
+  insights?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.SessionStepCountOrderByAggregateInput
   _avg?: Prisma.SessionStepAvgOrderByAggregateInput
   _max?: Prisma.SessionStepMaxOrderByAggregateInput
@@ -248,9 +259,11 @@ export type SessionStepScalarWhereWithAggregatesInput = {
   id?: Prisma.IntWithAggregatesFilter<"SessionStep"> | number
   sessionId?: Prisma.IntWithAggregatesFilter<"SessionStep"> | number
   guideStepId?: Prisma.IntWithAggregatesFilter<"SessionStep"> | number
+  insights?: Prisma.StringNullableWithAggregatesFilter<"SessionStep"> | string | null
 }
 
 export type SessionStepCreateInput = {
+  insights?: string | null
   session: Prisma.SessionCreateNestedOneWithoutSessionStepsInput
   guideStep: Prisma.GuideStepCreateNestedOneWithoutSessionStepsInput
 }
@@ -259,9 +272,11 @@ export type SessionStepUncheckedCreateInput = {
   id?: number
   sessionId: number
   guideStepId: number
+  insights?: string | null
 }
 
 export type SessionStepUpdateInput = {
+  insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   session?: Prisma.SessionUpdateOneRequiredWithoutSessionStepsNestedInput
   guideStep?: Prisma.GuideStepUpdateOneRequiredWithoutSessionStepsNestedInput
 }
@@ -270,22 +285,25 @@ export type SessionStepUncheckedUpdateInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   sessionId?: Prisma.IntFieldUpdateOperationsInput | number
   guideStepId?: Prisma.IntFieldUpdateOperationsInput | number
+  insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SessionStepCreateManyInput = {
   id?: number
   sessionId: number
   guideStepId: number
+  insights?: string | null
 }
 
 export type SessionStepUpdateManyMutationInput = {
-
+  insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SessionStepUncheckedUpdateManyInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   sessionId?: Prisma.IntFieldUpdateOperationsInput | number
   guideStepId?: Prisma.IntFieldUpdateOperationsInput | number
+  insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SessionStepListRelationFilter = {
@@ -302,6 +320,7 @@ export type SessionStepCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   sessionId?: Prisma.SortOrder
   guideStepId?: Prisma.SortOrder
+  insights?: Prisma.SortOrder
 }
 
 export type SessionStepAvgOrderByAggregateInput = {
@@ -314,12 +333,14 @@ export type SessionStepMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   sessionId?: Prisma.SortOrder
   guideStepId?: Prisma.SortOrder
+  insights?: Prisma.SortOrder
 }
 
 export type SessionStepMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   sessionId?: Prisma.SortOrder
   guideStepId?: Prisma.SortOrder
+  insights?: Prisma.SortOrder
 }
 
 export type SessionStepSumOrderByAggregateInput = {
@@ -413,12 +434,14 @@ export type SessionStepUncheckedUpdateManyWithoutSessionNestedInput = {
 }
 
 export type SessionStepCreateWithoutGuideStepInput = {
+  insights?: string | null
   session: Prisma.SessionCreateNestedOneWithoutSessionStepsInput
 }
 
 export type SessionStepUncheckedCreateWithoutGuideStepInput = {
   id?: number
   sessionId: number
+  insights?: string | null
 }
 
 export type SessionStepCreateOrConnectWithoutGuideStepInput = {
@@ -453,15 +476,18 @@ export type SessionStepScalarWhereInput = {
   id?: Prisma.IntFilter<"SessionStep"> | number
   sessionId?: Prisma.IntFilter<"SessionStep"> | number
   guideStepId?: Prisma.IntFilter<"SessionStep"> | number
+  insights?: Prisma.StringNullableFilter<"SessionStep"> | string | null
 }
 
 export type SessionStepCreateWithoutSessionInput = {
+  insights?: string | null
   guideStep: Prisma.GuideStepCreateNestedOneWithoutSessionStepsInput
 }
 
 export type SessionStepUncheckedCreateWithoutSessionInput = {
   id?: number
   guideStepId: number
+  insights?: string | null
 }
 
 export type SessionStepCreateOrConnectWithoutSessionInput = {
@@ -492,39 +518,47 @@ export type SessionStepUpdateManyWithWhereWithoutSessionInput = {
 export type SessionStepCreateManyGuideStepInput = {
   id?: number
   sessionId: number
+  insights?: string | null
 }
 
 export type SessionStepUpdateWithoutGuideStepInput = {
+  insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   session?: Prisma.SessionUpdateOneRequiredWithoutSessionStepsNestedInput
 }
 
 export type SessionStepUncheckedUpdateWithoutGuideStepInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   sessionId?: Prisma.IntFieldUpdateOperationsInput | number
+  insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SessionStepUncheckedUpdateManyWithoutGuideStepInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   sessionId?: Prisma.IntFieldUpdateOperationsInput | number
+  insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SessionStepCreateManySessionInput = {
   id?: number
   guideStepId: number
+  insights?: string | null
 }
 
 export type SessionStepUpdateWithoutSessionInput = {
+  insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   guideStep?: Prisma.GuideStepUpdateOneRequiredWithoutSessionStepsNestedInput
 }
 
 export type SessionStepUncheckedUpdateWithoutSessionInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   guideStepId?: Prisma.IntFieldUpdateOperationsInput | number
+  insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type SessionStepUncheckedUpdateManyWithoutSessionInput = {
   id?: Prisma.IntFieldUpdateOperationsInput | number
   guideStepId?: Prisma.IntFieldUpdateOperationsInput | number
+  insights?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 
@@ -533,6 +567,7 @@ export type SessionStepSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   id?: boolean
   sessionId?: boolean
   guideStepId?: boolean
+  insights?: boolean
   session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>
   guideStep?: boolean | Prisma.GuideStepDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sessionStep"]>
@@ -541,6 +576,7 @@ export type SessionStepSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   sessionId?: boolean
   guideStepId?: boolean
+  insights?: boolean
   session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>
   guideStep?: boolean | Prisma.GuideStepDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sessionStep"]>
@@ -549,6 +585,7 @@ export type SessionStepSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   sessionId?: boolean
   guideStepId?: boolean
+  insights?: boolean
   session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>
   guideStep?: boolean | Prisma.GuideStepDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["sessionStep"]>
@@ -557,9 +594,10 @@ export type SessionStepSelectScalar = {
   id?: boolean
   sessionId?: boolean
   guideStepId?: boolean
+  insights?: boolean
 }
 
-export type SessionStepOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "guideStepId", ExtArgs["result"]["sessionStep"]>
+export type SessionStepOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "sessionId" | "guideStepId" | "insights", ExtArgs["result"]["sessionStep"]>
 export type SessionStepInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   session?: boolean | Prisma.SessionDefaultArgs<ExtArgs>
   guideStep?: boolean | Prisma.GuideStepDefaultArgs<ExtArgs>
@@ -583,6 +621,7 @@ export type $SessionStepPayload<ExtArgs extends runtime.Types.Extensions.Interna
     id: number
     sessionId: number
     guideStepId: number
+    insights: string | null
   }, ExtArgs["result"]["sessionStep"]>
   composites: {}
 }
@@ -1011,6 +1050,7 @@ export interface SessionStepFieldRefs {
   readonly id: Prisma.FieldRef<"SessionStep", 'Int'>
   readonly sessionId: Prisma.FieldRef<"SessionStep", 'Int'>
   readonly guideStepId: Prisma.FieldRef<"SessionStep", 'Int'>
+  readonly insights: Prisma.FieldRef<"SessionStep", 'String'>
 }
     
 

@@ -1309,6 +1309,7 @@ export const StudyScalarFieldEnum = {
   id: 'id',
   scheduleId: 'scheduleId',
   resourceId: 'resourceId',
+  guideId: 'guideId',
   name: 'name'
 } as const
 
@@ -1386,7 +1387,8 @@ export type SessionScalarFieldEnum = (typeof SessionScalarFieldEnum)[keyof typeo
 export const SessionStepScalarFieldEnum = {
   id: 'id',
   sessionId: 'sessionId',
-  guideStepId: 'guideStepId'
+  guideStepId: 'guideStepId',
+  insights: 'insights'
 } as const
 
 export type SessionStepScalarFieldEnum = (typeof SessionStepScalarFieldEnum)[keyof typeof SessionStepScalarFieldEnum]

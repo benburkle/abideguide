@@ -15,7 +15,8 @@ import {
   Divider,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { IconChevronLeft, IconChevronRight, IconPlus, IconPencil } from '@tabler/icons-react';
+import { EditSessionModal } from '@/app/components/EditSessionModal';
 
 interface GuideStep {
   id: number;
@@ -28,6 +29,7 @@ interface GuideStep {
 interface SessionStep {
   id: number;
   guideStepId: number;
+  insights: string | null;
   guideStep: GuideStep;
 }
 
@@ -36,7 +38,7 @@ interface Session {
   date: string | null;
   time: string | null;
   insights: string | null;
-  sessionSteps: SessionStep[];
+  sessionSteps?: SessionStep[];
 }
 
 interface Schedule {
@@ -70,6 +72,8 @@ export default function StudyPage() {
   const [study, setStudy] = useState<Study | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentSessionIndex, setCurrentSessionIndex] = useState(0);
+  const [addSessionOpen, setAddSessionOpen] = useState(false);
+  const [editSessionOpen, setEditSessionOpen] = useState(false);
 
   useEffect(() => {
     if (studyId) {
@@ -143,11 +147,9 @@ export default function StudyPage() {
 
   return (
     <Box>
-      <Group justify="space-between" mb="xl" wrap="wrap">
-        <Title order={2} style={{ fontFamily: 'Arial, sans-serif' }}>
-          {study.name}
-        </Title>
-      </Group>
+      <Title order={2} mb="xl" style={{ fontFamily: 'Arial, sans-serif' }}>
+        {study.name}
+      </Title>
 
       <Stack gap="md" mb="xl">
         <Box>
@@ -202,6 +204,14 @@ export default function StudyPage() {
               <ActionIcon
                 variant="subtle"
                 size="lg"
+                onClick={() => setEditSessionOpen(true)}
+                aria-label="Edit session"
+              >
+                <IconPencil size={20} />
+              </ActionIcon>
+              <ActionIcon
+                variant="subtle"
+                size="lg"
                 onClick={goToPreviousSession}
                 disabled={!hasPreviousSession}
                 aria-label="Previous session"
@@ -216,6 +226,14 @@ export default function StudyPage() {
                 aria-label="Next session"
               >
                 <IconChevronRight size={20} />
+              </ActionIcon>
+              <ActionIcon
+                variant="subtle"
+                size="lg"
+                onClick={() => setAddSessionOpen(true)}
+                aria-label="Add session"
+              >
+                <IconPlus size={20} />
               </ActionIcon>
             </Group>
           </Group>
@@ -253,7 +271,7 @@ export default function StudyPage() {
                         {sessionStep.guideStep.instructions}
                       </Text>
                     )}
-                    {sessionStep.guideStep.example && (
+                    {sessionStep.insights ? (
                       <Box
                         style={{
                           padding: '8px',
@@ -263,10 +281,14 @@ export default function StudyPage() {
                         }}
                       >
                         <Text size="sm" c="dimmed" mb="xs">
-                          Example:
+                          Insights:
                         </Text>
-                        <Text size="sm">{sessionStep.guideStep.example}</Text>
+                        <Text size="sm">{sessionStep.insights}</Text>
                       </Box>
+                    ) : (
+                      <Text size="sm" c="dimmed" mt="xs" style={{ fontStyle: 'italic' }}>
+                        No insights yet
+                      </Text>
                     )}
                   </Box>
                 ))}
@@ -279,10 +301,46 @@ export default function StudyPage() {
           )}
         </Box>
       ) : (
-        <Text c="dimmed" ta="center" py="xl">
-          No sessions yet.
-        </Text>
+        <Box>
+          <Group justify="space-between" mb="md">
+            <Text size="sm" c="dimmed">
+              No sessions yet
+            </Text>
+            <Group gap="xs">
+              <ActionIcon
+                variant="subtle"
+                size="lg"
+                onClick={() => setAddSessionOpen(true)}
+                aria-label="Add session"
+              >
+                <IconPlus size={20} />
+              </ActionIcon>
+            </Group>
+          </Group>
+        </Box>
       )}
+
+      <EditSessionModal
+        opened={addSessionOpen}
+        onClose={() => setAddSessionOpen(false)}
+        studyId={parseInt(studyId)}
+        session={null}
+        onSaved={() => {
+          setAddSessionOpen(false);
+          fetchStudy();
+        }}
+      />
+
+      <EditSessionModal
+        opened={editSessionOpen}
+        onClose={() => setEditSessionOpen(false)}
+        studyId={parseInt(studyId)}
+        session={currentSession}
+        onSaved={() => {
+          setEditSessionOpen(false);
+          fetchStudy();
+        }}
+      />
     </Box>
   );
 }
