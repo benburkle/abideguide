@@ -43,6 +43,7 @@ interface Study {
   name: string;
   scheduleId: number | null;
   resourceId: number;
+  guideId: number | null;
   schedule: Schedule | null;
   resource: Resource;
   sessions: Session[];
