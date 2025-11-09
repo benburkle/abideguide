@@ -15,7 +15,8 @@
     "db:migrate:deploy": "prisma migrate deploy",
     "db:migrate:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
-    "db:push": "prisma db push"
+    "db:push": "prisma db push",
+    "generate:favicon": "tsx scripts/generate-favicon.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -45,7 +46,10 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
+    "sharp": "^0.34.5",
     "tailwindcss": "^4",
+    "to-ico": "^1.1.5",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }

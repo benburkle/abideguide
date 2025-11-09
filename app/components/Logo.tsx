@@ -34,7 +34,6 @@ export function Logo({ size = 40 }: LogoProps) {
           position: 'relative',
           width: '100%',
           height: '100%',
-          filter: 'brightness(0) invert(1)',
         }}
       >
         <Image
