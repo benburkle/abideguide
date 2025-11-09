@@ -50,10 +50,10 @@ interface Study {
   id: number;
   name: string;
   scheduleId: number | null;
-  resourceId: number;
+  resourceId: number | null;
   guideId: number | null;
   schedule: Schedule | null;
-  resource: Resource;
+  resource: Resource | null;
   sessions: any[];
 }
 
@@ -89,7 +89,7 @@ export function EditStudyModal({
         setFormData({
           name: study.name || '',
           scheduleId: study.scheduleId ? study.scheduleId.toString() : '',
-          resourceId: study.resourceId.toString(),
+          resourceId: study.resourceId ? study.resourceId.toString() : '',
           guideId: study.guideId ? study.guideId.toString() : '',
         });
       } else {
@@ -144,7 +144,7 @@ export function EditStudyModal({
       const requestBody = {
         name: formData.name,
         scheduleId: formData.scheduleId || null,
-        resourceId: formData.resourceId,
+        resourceId: formData.resourceId || null,
         guideId: formData.guideId || null,
       };
 
@@ -298,14 +298,14 @@ export function EditStudyModal({
             />
             <Select
               label="Resource"
-              placeholder="Select resource"
-              required
+              placeholder="Select resource (optional)"
               data={resourceOptions}
               value={formData.resourceId}
               onChange={(value) =>
                 setFormData({ ...formData, resourceId: value || '' })
               }
               searchable
+              clearable
             />
             <Select
               label="Guide"

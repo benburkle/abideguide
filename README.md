@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org) project with [Mantine UI](https://mantin
 
 - ⚡️ Next.js 16 with App Router
 - 🎨 Mantine UI components library
-- 🗄️ Prisma ORM with SQLite database
+- 🗄️ Prisma ORM with PostgreSQL database
 - 📝 Full CRUD operations for posts
 - 🔔 Toast notifications
 - 💅 Modern, responsive UI
@@ -17,16 +17,51 @@ First, install dependencies:
 npm install
 ```
 
-Generate the Prisma client:
+### Option 1: Using Docker Compose (Recommended)
+
+Start the PostgreSQL database:
 
 ```bash
-npx prisma generate
+npm run db:start
 ```
 
-Push the database schema:
+This will start a PostgreSQL container on port 5432.
+
+### Option 2: Local PostgreSQL Installation
+
+If you have PostgreSQL installed locally, make sure it's running and create a database:
+
+```sql
+CREATE DATABASE abideguide;
+```
+
+### Set Up Environment Variables
+
+Create a `.env` file in the root directory:
 
 ```bash
-npx prisma db push
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/abideguide?schema=public"
+```
+
+**Note**: If using Docker Compose, the default credentials are:
+- User: `postgres`
+- Password: `postgres`
+- Database: `abideguide`
+- Port: `5432`
+
+### Initialize the Database
+
+Generate the Prisma client and push the schema:
+
+```bash
+npm install
+npm run db:push
+```
+
+Or use migrations (recommended for production):
+
+```bash
+npm run db:migrate
 ```
 
 Run the development server:
@@ -39,12 +74,55 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 ## Database
 
-This project uses Prisma with SQLite. The database file is located at `prisma/dev.db`.
+This project uses Prisma with PostgreSQL. 
+
+### Local Development
+
+The easiest way to run PostgreSQL locally is using Docker Compose:
+
+```bash
+# Start the database
+npm run db:start
+
+# Stop the database
+npm run db:stop
+
+# Reset the database (removes all data)
+npm run db:reset
+```
+
+**Database Scripts:**
+- `npm run db:start` - Start PostgreSQL with Docker Compose
+- `npm run db:stop` - Stop PostgreSQL
+- `npm run db:reset` - Reset database (removes all data and recreates)
+- `npm run db:migrate` - Run database migrations
+- `npm run db:push` - Push schema changes without migrations
+- `npm run db:studio` - Open Prisma Studio to view/edit data
+
+**Default Docker Compose credentials:**
+- User: `postgres`
+- Password: `postgres`
+- Database: `abideguide`
+- Port: `5432`
+
+Make sure your `.env` file has:
+```
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/abideguide?schema=public"
+```
+
+### Production (Vercel)
+
+For production on Vercel:
+1. Set up a PostgreSQL database (Vercel Postgres, Supabase, Neon, etc.)
+2. Add the `DATABASE_URL` environment variable in your Vercel project settings
+3. Run migrations: `npx prisma migrate deploy` (or Vercel will run `prisma generate` automatically via the `postinstall` script)
+
+### Viewing Your Database
 
 To view your database:
 
 ```bash
-npx prisma studio
+npm run db:studio
 ```
 
 This will open Prisma Studio in your browser where you can view and edit your data.

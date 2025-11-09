@@ -7,7 +7,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -52,11 +52,11 @@ model Resource {
 model Study {
   id         Int       @id @default(autoincrement())
   scheduleId Int?      @map("schedule_id")
-  resourceId Int       @map("resource_id")
+  resourceId Int?       @map("resource_id")
   guideId    Int?      @map("guide_id")
   name       String // Name of the study
   schedule   Schedule? @relation(fields: [scheduleId], references: [id])
-  resource   Resource  @relation(fields: [resourceId], references: [id])
+  resource   Resource? @relation(fields: [resourceId], references: [id])
   guide      Guide?    @relation(fields: [guideId], references: [id])
   sessions   Session[]
 

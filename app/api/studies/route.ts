@@ -42,31 +42,28 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!resourceId) {
-      return NextResponse.json(
-        { error: 'Resource ID is required', details: 'Resource ID must be provided' },
-        { status: 400 }
-      );
-    }
+    // Validate resource if provided
+    let parsedResourceId: number | null = null;
+    if (resourceId) {
+      parsedResourceId = parseInt(resourceId);
+      if (isNaN(parsedResourceId)) {
+        return NextResponse.json(
+          { error: 'Invalid Resource ID', details: `Resource ID must be a valid number. Received: ${resourceId}` },
+          { status: 400 }
+        );
+      }
 
-    const parsedResourceId = parseInt(resourceId);
-    if (isNaN(parsedResourceId)) {
-      return NextResponse.json(
-        { error: 'Invalid Resource ID', details: `Resource ID must be a valid number. Received: ${resourceId}` },
-        { status: 400 }
-      );
-    }
+      // Check if resource exists
+      const resource = await prisma.resource.findUnique({
+        where: { id: parsedResourceId },
+      });
 
-    // Check if resource exists
-    const resource = await prisma.resource.findUnique({
-      where: { id: parsedResourceId },
-    });
-
-    if (!resource) {
-      return NextResponse.json(
-        { error: 'Resource not found', details: `Resource with ID ${parsedResourceId} does not exist` },
-        { status: 404 }
-      );
+      if (!resource) {
+        return NextResponse.json(
+          { error: 'Resource not found', details: `Resource with ID ${parsedResourceId} does not exist` },
+          { status: 404 }
+        );
+      }
     }
 
     // Check if schedule exists if provided

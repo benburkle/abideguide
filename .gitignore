@@ -42,7 +42,11 @@ next-env.d.ts
 
 # prisma
 /lib/prisma
+/.prisma
 prisma/dev.db
 prisma/dev.db-journal
 *.db
 *.db-journal
+
+# docker
+docker-compose.override.yml

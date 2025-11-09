@@ -64,10 +64,10 @@ interface Study {
   id: number;
   name: string;
   scheduleId: number | null;
-  resourceId: number;
+  resourceId: number | null;
   guideId: number | null;
   schedule: Schedule | null;
-  resource: Resource;
+  resource: Resource | null;
   guide: Guide | null;
   sessions: Session[];
 }
