@@ -1,22 +1,31 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Box, useMantineColorScheme, ActionIcon } from '@mantine/core';
-import { IconChevronLeft } from '@tabler/icons-react';
+import { Box, useMantineColorScheme } from '@mantine/core';
 import { TopNavBar } from './TopNavBar';
 import { Sidebar } from './Sidebar';
 
 export function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const { colorScheme } = useMantineColorScheme();
   const [mounted, setMounted] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
     setMounted(true);
+    // Load sidebar state from localStorage
+    const savedSidebarState = localStorage.getItem('sidebarOpen');
+    if (savedSidebarState !== null) {
+      setSidebarOpen(savedSidebarState === 'true');
+    }
   }, []);
 
   const toggleSidebar = () => {
-    setSidebarOpen(!sidebarOpen);
+    setSidebarOpen((prev) => {
+      const newState = !prev;
+      // Save sidebar state to localStorage
+      localStorage.setItem('sidebarOpen', String(newState));
+      return newState;
+    });
   };
 
   const borderColor = mounted && colorScheme === 'dark' 
@@ -36,7 +45,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           overflow: 'hidden',
         }}
       >
-        {sidebarOpen ? (
+        {sidebarOpen && (
           <Box style={{ 
             width: 'auto', 
             flexShrink: 0, 
@@ -51,28 +60,6 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
           }}>
             <Sidebar sidebarOpen={sidebarOpen} toggleSidebar={toggleSidebar} />
           </Box>
-        ) : (
-          <Box style={{ 
-            width: 'auto', 
-            flexShrink: 0, 
-            borderRight: `1px solid ${borderColor}`, 
-            padding: '16px',
-            position: 'fixed',
-            left: 0,
-            top: '60px',
-            height: 'calc(100vh - 60px)',
-            backgroundColor: 'var(--mantine-color-body)',
-            zIndex: 99,
-          }}>
-            <ActionIcon
-              variant="subtle"
-              size="lg"
-              onClick={toggleSidebar}
-              aria-label="Toggle sidebar"
-            >
-              <IconChevronLeft size={20} />
-            </ActionIcon>
-          </Box>
         )}
         <Box 
           style={{ 
@@ -80,7 +67,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             padding: '24px', 
             overflowY: 'auto',
             backgroundColor: 'var(--mantine-color-body)',
-            marginLeft: sidebarOpen ? '200px' : '60px', // Approximate sidebar width when open, arrow width when closed
+            marginLeft: sidebarOpen ? '200px' : '0px', // Approximate sidebar width when open
           }}
         >
           {children}

@@ -8,6 +8,8 @@ import { IconHelp, IconArrowLeft, IconChevronDown, IconChevronUp } from '@tabler
 import { useEditor } from '@tiptap/react';
 import { RichTextEditor } from '@mantine/tiptap';
 import StarterKit from '@tiptap/starter-kit';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
 import { SessionStepInsightsEditor } from '@/app/components/SessionStepInsightsEditor';
 
 interface GuideStep {
@@ -58,7 +60,7 @@ export default function EditSessionPage() {
   const [editorMounted, setEditorMounted] = useState(false);
 
   const insightsEditor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, TaskList, TaskItem],
     content: insights || '',
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
@@ -361,6 +363,7 @@ export default function EditSessionPage() {
                           <RichTextEditor.Hr />
                           <RichTextEditor.BulletList />
                           <RichTextEditor.OrderedList />
+                          <RichTextEditor.TaskList />
                         </RichTextEditor.ControlsGroup>
                         <RichTextEditor.ControlsGroup>
                           <RichTextEditor.Link />

@@ -5,6 +5,8 @@ import { Box, Text, Loader } from '@mantine/core';
 import { RichTextEditor } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
 
 interface SessionStepInsightsEditorProps {
   content: string | null;
@@ -15,7 +17,7 @@ export function SessionStepInsightsEditor({ content, onChange }: SessionStepInsi
   const [mounted, setMounted] = useState(false);
   
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, TaskList, TaskItem],
     content: content || '',
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
@@ -75,6 +77,7 @@ export function SessionStepInsightsEditor({ content, onChange }: SessionStepInsi
             <RichTextEditor.Hr />
             <RichTextEditor.BulletList />
             <RichTextEditor.OrderedList />
+            <RichTextEditor.TaskList />
           </RichTextEditor.ControlsGroup>
           <RichTextEditor.ControlsGroup>
             <RichTextEditor.Link />

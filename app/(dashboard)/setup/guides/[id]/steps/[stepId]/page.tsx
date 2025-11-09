@@ -19,6 +19,8 @@ import { IconArrowLeft } from '@tabler/icons-react';
 import { useEditor } from '@tiptap/react';
 import { RichTextEditor } from '@mantine/tiptap';
 import StarterKit from '@tiptap/starter-kit';
+import TaskList from '@tiptap/extension-task-list';
+import TaskItem from '@tiptap/extension-task-item';
 
 interface GuideStep {
   id: number;
@@ -47,7 +49,7 @@ export default function EditGuideStepPage() {
   });
 
   const instructionsEditor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, TaskList, TaskItem],
     content: formData.instructions || '',
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
@@ -56,7 +58,7 @@ export default function EditGuideStepPage() {
   });
 
   const exampleEditor = useEditor({
-    extensions: [StarterKit],
+    extensions: [StarterKit, TaskList, TaskItem],
     content: formData.example || '',
     immediatelyRender: false,
     onUpdate: ({ editor }) => {
@@ -241,6 +243,7 @@ export default function EditGuideStepPage() {
                     <RichTextEditor.Hr />
                     <RichTextEditor.BulletList />
                     <RichTextEditor.OrderedList />
+                    <RichTextEditor.TaskList />
                   </RichTextEditor.ControlsGroup>
                   <RichTextEditor.ControlsGroup>
                     <RichTextEditor.Link />
@@ -292,6 +295,7 @@ export default function EditGuideStepPage() {
                     <RichTextEditor.Hr />
                     <RichTextEditor.BulletList />
                     <RichTextEditor.OrderedList />
+                    <RichTextEditor.TaskList />
                   </RichTextEditor.ControlsGroup>
                   <RichTextEditor.ControlsGroup>
                     <RichTextEditor.Link />

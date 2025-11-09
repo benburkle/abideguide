@@ -6,6 +6,7 @@ import { useMantineColorScheme } from '@mantine/core';
 import { IconHelp, IconSun, IconMoon } from '@tabler/icons-react';
 import { MdMenuOpen } from 'react-icons/md';
 import { Logo } from './Logo';
+import { CountdownTimer } from './CountdownTimer';
 
 interface TopNavBarProps {
   onMenuClick: () => void;
@@ -39,6 +40,7 @@ export function TopNavBar({ onMenuClick }: TopNavBarProps) {
         </Group>
         <Text fw={500} size="lg">Abide Guide</Text>
         <Group gap="xs">
+          <CountdownTimer />
           <ActionIcon
             variant="subtle"
             size="lg"
