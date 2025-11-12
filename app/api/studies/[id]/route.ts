@@ -127,19 +127,45 @@ export async function PUT(
       );
     }
 
-    if (!resourceId) {
-      return NextResponse.json(
-        { error: 'Resource ID is required', details: 'Resource ID must be provided' },
-        { status: 400 }
-      );
+    // Validate resource if provided
+    let parsedResourceId: number | null = null;
+    if (resourceId) {
+      parsedResourceId = parseInt(resourceId);
+      if (isNaN(parsedResourceId)) {
+        return NextResponse.json(
+          { error: 'Invalid Resource ID', details: `Resource ID must be a valid number. Received: ${resourceId}` },
+          { status: 400 }
+        );
+      }
+
+      // Check if resource exists
+      const resource = await prisma.resource.findUnique({
+        where: { id: parsedResourceId },
+      });
+
+      if (!resource) {
+        return NextResponse.json(
+          { error: 'Resource not found', details: `Resource with ID ${parsedResourceId} does not exist` },
+          { status: 404 }
+        );
+      }
     }
 
-    const parsedResourceId = parseInt(resourceId);
-    if (isNaN(parsedResourceId)) {
-      return NextResponse.json(
-        { error: 'Invalid Resource ID', details: 'Resource ID must be a valid number' },
-        { status: 400 }
-      );
+    // Check if schedule exists if provided
+    if (scheduleId) {
+      const parsedScheduleId = parseInt(scheduleId);
+      if (!isNaN(parsedScheduleId)) {
+        const schedule = await prisma.schedule.findUnique({
+          where: { id: parsedScheduleId },
+        });
+
+        if (!schedule) {
+          return NextResponse.json(
+            { error: 'Schedule not found', details: `Schedule with ID ${parsedScheduleId} does not exist` },
+            { status: 404 }
+          );
+        }
+      }
     }
 
     // Check if guide exists if provided
