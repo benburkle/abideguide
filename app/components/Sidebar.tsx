@@ -3,7 +3,7 @@
 import { NavLink, Box, Loader } from '@mantine/core';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 
 interface Study {
   id: number;
@@ -31,12 +31,7 @@ export function Sidebar({ sidebarOpen, toggleSidebar }: SidebarProps) {
   const [studies, setStudies] = useState<Study[]>([]);
   const [loadingStudies, setLoadingStudies] = useState(true);
 
-  useEffect(() => {
-    setMounted(true);
-    fetchStudies();
-  }, []);
-
-  const fetchStudies = async () => {
+  const fetchStudies = useCallback(async () => {
     try {
       setLoadingStudies(true);
       const response = await fetch('/api/studies');
@@ -49,7 +44,35 @@ export function Sidebar({ sidebarOpen, toggleSidebar }: SidebarProps) {
     } finally {
       setLoadingStudies(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    setMounted(true);
+    fetchStudies();
+  }, [fetchStudies]);
+
+  // Refresh studies when navigating to study-related pages
+  // This ensures the sidebar updates after creating/editing a study
+  useEffect(() => {
+    if (mounted && pathname) {
+      // Refresh when navigating to studies list or individual study pages
+      if (pathname === '/setup/studies' || pathname?.match(/^\/study\/\d+$/)) {
+        fetchStudies();
+      }
+    }
+  }, [pathname, mounted, fetchStudies]);
+
+  // Also refresh when window regains focus (user returns to tab)
+  useEffect(() => {
+    if (!mounted) return;
+    
+    const handleFocus = () => {
+      fetchStudies();
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [mounted, fetchStudies]);
 
   // Build dynamic nav items with studies
   const studyNavItems = studies.map((study) => ({
