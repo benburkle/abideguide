@@ -3,7 +3,7 @@
 import { NavLink, Box, Loader } from '@mantine/core';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useMemo } from 'react';
 
 interface Study {
   id: number;
@@ -57,25 +57,41 @@ export function Sidebar({ sidebarOpen, toggleSidebar }: SidebarProps) {
     fetchStudies();
   }, [fetchStudies]);
 
+  // Track previous pathname to avoid unnecessary refreshes
+  const [prevPathname, setPrevPathname] = useState<string | null>(null);
+
   // Refresh studies when navigating to study-related pages
   // This ensures the sidebar updates after creating/editing a study
   useEffect(() => {
     if (mounted && pathname) {
-      // Refresh when navigating to studies list, new study page, individual study pages, or study detail pages
-      if (
+      // Only refresh if we're navigating TO a study-related page FROM a different page
+      // This prevents refreshing when just clicking between studies
+      const isStudyPage = 
         pathname === '/setup/studies' ||
         pathname === '/setup/studies/new' ||
         pathname?.match(/^\/setup\/studies\/\d+$/) ||
-        pathname?.match(/^\/study\/\d+$/)
-      ) {
+        pathname?.match(/^\/study\/\d+$/);
+      
+      const wasStudyPage = prevPathname &&
+        (prevPathname === '/setup/studies' ||
+         prevPathname === '/setup/studies/new' ||
+         prevPathname?.match(/^\/setup\/studies\/\d+$/) ||
+         prevPathname?.match(/^\/study\/\d+$/));
+      
+      // Only refresh if navigating TO a study page FROM a non-study page
+      // or if coming from the studies list page (where changes might have occurred)
+      if (isStudyPage && (!wasStudyPage || prevPathname === '/setup/studies')) {
         // Delay to ensure the database transaction is committed
         const timeoutId = setTimeout(() => {
           fetchStudies();
         }, 200);
+        setPrevPathname(pathname);
         return () => clearTimeout(timeoutId);
+      } else {
+        setPrevPathname(pathname);
       }
     }
-  }, [pathname, mounted, fetchStudies]);
+  }, [pathname, mounted, fetchStudies, prevPathname]);
 
   // Also refresh periodically when on studies page to catch any changes
   useEffect(() => {
@@ -123,19 +139,24 @@ export function Sidebar({ sidebarOpen, toggleSidebar }: SidebarProps) {
     };
   }, [mounted, fetchStudies]);
 
-  // Build dynamic nav items with studies
-  const studyNavItems = studies.map((study) => ({
-    label: study.name,
-    href: `/study/${study.id}`,
-  }));
+  // Track which nav items are opened - initialize as empty, will be set based on pathname
+  const [openedItems, setOpenedItems] = useState<Set<string>>(new Set());
 
-  const navItems = [
-    {
-      label: 'Abide',
-      children: studyNavItems,
-    },
-    ...staticNavItems,
-  ];
+  // Build dynamic nav items with studies - memoize to prevent unnecessary re-renders
+  const navItems = useMemo(() => {
+    const studyNavItems = studies.map((study) => ({
+      label: study.name,
+      href: `/study/${study.id}`,
+    }));
+
+    return [
+      {
+        label: 'Abide',
+        children: studyNavItems,
+      },
+      ...staticNavItems,
+    ];
+  }, [studies]);
 
   if (!mounted || loadingStudies) {
     return (
@@ -161,15 +182,43 @@ export function Sidebar({ sidebarOpen, toggleSidebar }: SidebarProps) {
     );
   }
 
+  // Initialize and maintain opened state based on active pathname
+  // Preserve manually opened items while ensuring active parents stay open
+  useEffect(() => {
+    if (mounted && pathname) {
+      setOpenedItems((prev) => {
+        const newOpenedItems = new Set(prev); // Preserve existing opened items
+        navItems.forEach((item) => {
+          const isParentActive = item.children.some((child) => pathname === child.href);
+          if (isParentActive) {
+            newOpenedItems.add(item.label); // Ensure active parent is open
+          }
+        });
+        return newOpenedItems;
+      });
+    }
+  }, [mounted, pathname, navItems]);
+
   return (
     <Box style={{ padding: '16px', height: '100%' }}>
       {navItems.map((item) => {
         const isParentActive = item.children.some((child) => pathname === child.href);
+        const isOpened = openedItems.has(item.label) || isParentActive;
+        
         return (
           <NavLink
             key={item.label}
             label={item.label}
-            defaultOpened={isParentActive}
+            opened={isOpened}
+            onChange={(opened) => {
+              const newOpenedItems = new Set(openedItems);
+              if (opened) {
+                newOpenedItems.add(item.label);
+              } else {
+                newOpenedItems.delete(item.label);
+              }
+              setOpenedItems(newOpenedItems);
+            }}
           >
             {item.children.length > 0 ? (
               item.children.map((child) => {
