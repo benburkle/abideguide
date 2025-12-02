@@ -22,7 +22,7 @@ import StarterKit from '@tiptap/starter-kit';
 import TaskList from '@tiptap/extension-task-list';
 import TaskItem from '@tiptap/extension-task-item';
 
-interface GuideStep {
+interface _GuideStep {
   id: number;
   index: number;
   name: string;

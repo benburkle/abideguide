@@ -76,7 +76,7 @@ export function EditResourceModal({ opened, onClose, resource, onSaved }: EditRe
         let errorData;
         try {
           errorData = await response.json();
-        } catch (e) {
+        } catch {
           errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
         }
         console.error('API Error Response:', errorData);

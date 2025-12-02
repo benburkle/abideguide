@@ -15,7 +15,7 @@ if (typeof global.Request === 'undefined') {
     global.Request = Request;
     global.Response = Response;
     global.Headers = Headers;
-  } catch (e) {
+  } catch {
     // Fallback: create minimal mocks
     global.Request = class Request {
       constructor(input, init) {

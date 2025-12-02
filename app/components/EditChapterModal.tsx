@@ -67,7 +67,7 @@ export function EditChapterModal({
       });
       onSaved();
       onClose();
-    } catch (err) {
+    } catch {
       notifications.show({ title: 'Error', message: 'Failed to save chapter', color: 'red' });
     } finally {
       setLoading(false);

@@ -11,7 +11,13 @@ interface Guide {
   name: string;
   levelOfResource: string | null;
   amtOfResource: string | null;
-  guideSteps: any[];
+  guideSteps: Array<{
+    id: number;
+    index: number;
+    name: string;
+    instructions: string | null;
+    example: string | null;
+  }>;
 }
 
 export default function EditGuidePage() {
@@ -95,7 +101,7 @@ export default function EditGuidePage() {
         let errorData;
         try {
           errorData = await response.json();
-        } catch (e) {
+        } catch {
           errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
         }
         console.error('API Error Response:', errorData);

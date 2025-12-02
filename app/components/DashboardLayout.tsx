@@ -14,6 +14,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { walkthroughType, closeWalkthrough } = useWalkthrough();
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     // Load sidebar state from localStorage
     const savedSidebarState = localStorage.getItem('sidebarOpen');

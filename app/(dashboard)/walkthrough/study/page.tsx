@@ -376,11 +376,11 @@ export default function StudyWalkthroughPage() {
           {currentStepData.id === 'complete' && (
             <Box>
               <Text mb="md" fw={500}>
-                You're ready to create studies!
+                You&apos;re ready to create studies!
               </Text>
               <Text size="sm" c="dimmed">
                 Once you create a study, you can view it and start adding sessions. If you assigned
-                a guide, the sessions will automatically include the guide's steps.
+                a guide, the sessions will automatically include the guide&apos;s steps.
               </Text>
             </Box>
           )}

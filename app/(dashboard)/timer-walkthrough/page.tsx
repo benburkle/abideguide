@@ -363,9 +363,9 @@ export default function TimerWalkthroughPage() {
               </Text>
               <Text size="sm" component="ol" style={{ paddingLeft: '20px' }}>
                 <li>Click on the timer display (highlighted above)</li>
-                <li>Enter minutes (0-59) in the "Minutes" field</li>
-                <li>Enter seconds (0-59) in the "Seconds" field</li>
-                <li>Click the "Set" button to apply</li>
+                <li>Enter minutes (0-59) in the &quot;Minutes&quot; field</li>
+                <li>Enter seconds (0-59) in the &quot;Seconds&quot; field</li>
+                <li>Click the &quot;Set&quot; button to apply</li>
               </Text>
             </Box>
           )}
@@ -375,7 +375,7 @@ export default function TimerWalkthroughPage() {
               <Text mb="sm">When the countdown reaches zero:</Text>
               <Text size="sm" component="ul" style={{ paddingLeft: '20px' }}>
                 <li>Three beep sounds will play automatically</li>
-                <li>The timer display will reset to "00:00"</li>
+                <li>The timer display will reset to &quot;00:00&quot;</li>
                 <li>You can set a new time and start again</li>
               </Text>
             </Box>
@@ -396,7 +396,7 @@ export default function TimerWalkthroughPage() {
           {currentStepData.id === 'complete' && (
             <Box>
               <Text mb="md" fw={500}>
-                You're ready to use the timer!
+                You&apos;re ready to use the timer!
               </Text>
               <Text size="sm" c="dimmed">
                 Try setting a short time (like 10 seconds) and starting the timer to see it in

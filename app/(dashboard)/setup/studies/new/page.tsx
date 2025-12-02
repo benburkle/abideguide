@@ -7,7 +7,7 @@ import { Box } from '@mantine/core';
 
 export default function NewStudyPage() {
   const router = useRouter();
-  const [modalOpen, setModalOpen] = useState(true);
+  const [_modalOpen, _setModalOpen] = useState(true);
 
   const handleSaved = () => {
     router.push('/setup/studies');
@@ -19,7 +19,7 @@ export default function NewStudyPage() {
 
   return (
     <Box>
-      <EditStudyModal opened={modalOpen} onClose={handleClose} study={null} onSaved={handleSaved} />
+      <EditStudyModal opened={true} onClose={handleClose} study={null} onSaved={handleSaved} />
     </Box>
   );
 }

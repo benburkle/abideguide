@@ -376,7 +376,7 @@ export default function SessionWalkthroughPage() {
           {currentStepData.id === 'complete' && (
             <Box>
               <Text mb="md" fw={500}>
-                You're ready to create sessions!
+                You&apos;re ready to create sessions!
               </Text>
               <Text size="sm" c="dimmed">
                 Sessions are saved and can be viewed, edited, or navigated through using the arrows

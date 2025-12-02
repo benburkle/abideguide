@@ -11,7 +11,6 @@ import {
   Stack,
   Group,
   ActionIcon,
-  Badge,
   Divider,
   Grid,
 } from '@mantine/core';

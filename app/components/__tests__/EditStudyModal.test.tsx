@@ -1,4 +1,3 @@
-import React from 'react';
 import { EditStudyModal } from '../EditStudyModal';
 
 jest.mock('@mantine/notifications', () => ({
@@ -27,7 +26,7 @@ describe('EditStudyModal', () => {
   });
 
   it('should accept props', () => {
-    const props = {
+    const _props = {
       opened: false,
       onClose: mockOnClose,
       study: null,
@@ -55,7 +54,7 @@ describe('EditStudyModal', () => {
       sessions: [],
     };
 
-    const props = {
+    const _props = {
       opened: false,
       onClose: mockOnClose,
       study,

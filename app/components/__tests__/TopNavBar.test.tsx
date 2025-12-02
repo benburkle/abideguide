@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MantineProvider } from '@mantine/core';
 import { TopNavBar } from '../TopNavBar';
@@ -66,7 +66,6 @@ describe('TopNavBar', () => {
   });
 
   it('should show user menu when user is authenticated', async () => {
-    const user = userEvent.setup();
     jest.spyOn(auth, 'useSession').mockReturnValue({
       data: {
         user: {

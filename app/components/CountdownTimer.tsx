@@ -27,7 +27,7 @@ export function CountdownTimer() {
   const [isRunning, setIsRunning] = useState(false);
   const [initialTime, setInitialTime] = useState({ minutes: 0, seconds: 0 });
   const [modalOpen, setModalOpen] = useState(false);
-  const [audioContextInitialized, setAudioContextInitialized] = useState(false);
+  const [_audioContextInitialized, setAudioContextInitialized] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const endTimeRef = useRef<number | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -119,6 +119,7 @@ export function CountdownTimer() {
           // Timer was running, calculate remaining time
           const remaining = Math.ceil((state.endTime - now) / 1000);
           if (remaining > 0) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setTimeLeft(remaining);
             setIsRunning(true);
             endTimeRef.current = state.endTime;

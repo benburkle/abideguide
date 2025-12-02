@@ -173,7 +173,7 @@ export function EditStudyModal({ opened, onClose, study, onSaved }: EditStudyMod
               errorMessage =
                 errorData.error || errorData.details || errorData.message || errorMessage;
             }
-          } catch (jsonError) {
+          } catch {
             // If JSON parsing fails, try reading as text from original response
             try {
               const text = await response.text();

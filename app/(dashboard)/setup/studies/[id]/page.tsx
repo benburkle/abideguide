@@ -2,18 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import {
-  Title,
-  Text,
-  Box,
-  Button,
-  Loader,
-  Stack,
-  Group,
-  ActionIcon,
-  Table,
-  Badge,
-} from '@mantine/core';
+import { Title, Text, Box, Button, Loader, Stack, Group, ActionIcon, Table } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconEdit, IconArrowLeft } from '@tabler/icons-react';
 import { EditStudyModal } from '@/app/components/EditStudyModal';

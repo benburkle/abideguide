@@ -19,7 +19,7 @@ jest.mock('@tiptap/react', () => ({
 }));
 
 jest.mock('@mantine/tiptap', () => ({
-  RichTextEditor: ({ editor, children, style }: any) => (
+  RichTextEditor: ({ children, style }: any) => (
     <div data-testid="rich-text-editor" style={style}>
       <div data-testid="toolbar">{children}</div>
       <div data-testid="content" />

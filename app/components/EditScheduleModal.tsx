@@ -109,7 +109,7 @@ export function EditScheduleModal({ opened, onClose, schedule, onSaved }: EditSc
         let errorData;
         try {
           errorData = await response.json();
-        } catch (e) {
+        } catch {
           errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
         }
         console.error('API Error Response:', errorData);

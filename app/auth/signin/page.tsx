@@ -49,7 +49,7 @@ export default function SignInPage() {
         router.push('/');
         router.refresh();
       }
-    } catch (error) {
+    } catch {
       notifications.show({
         title: 'Error',
         message: 'An error occurred during sign in',

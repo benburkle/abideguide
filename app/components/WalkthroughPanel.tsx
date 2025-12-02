@@ -342,7 +342,7 @@ const walkthroughSteps: Record<string, WalkthroughStep[]> = {
 
 export function WalkthroughPanel({ walkthroughType, onClose }: WalkthroughPanelProps) {
   const router = useRouter();
-  const pathname = usePathname();
+  const _pathname = usePathname();
   const { colorScheme } = useMantineColorScheme();
   const [mounted, setMounted] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
@@ -356,6 +356,7 @@ export function WalkthroughPanel({ walkthroughType, onClose }: WalkthroughPanelP
   const stepRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 
@@ -560,7 +561,7 @@ export function WalkthroughPanel({ walkthroughType, onClose }: WalkthroughPanelP
             {currentStepData.id === 'complete' && (
               <Box>
                 <Text size="sm" fw={500} mb="md">
-                  You're ready to get started!
+                  You&apos;re ready to get started!
                 </Text>
               </Box>
             )}

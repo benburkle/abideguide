@@ -6,7 +6,6 @@ import {
   Button,
   Stack,
   TextInput,
-  Textarea,
   Group,
   ActionIcon,
   Box,
@@ -17,7 +16,7 @@ import {
   Grid,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconHelp, IconArrowLeft, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import { IconArrowLeft, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { useEditor } from '@tiptap/react';
 import { RichTextEditor } from '@mantine/tiptap';
 import StarterKit from '@tiptap/starter-kit';
@@ -168,7 +167,7 @@ export default function EditSessionPage() {
     );
   };
 
-  const openHelpModal = (guideStep: GuideStep) => {
+  const _openHelpModal = (guideStep: GuideStep) => {
     setSelectedGuideStep(guideStep);
     setHelpModalOpen(true);
   };

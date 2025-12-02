@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Modal, TextInput, Button, Stack, Group, Textarea, Loader } from '@mantine/core';
+import { Modal, TextInput, Button, Stack, Group, Loader } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 
 interface Guide {
@@ -75,7 +75,7 @@ export function EditGuideModal({ opened, onClose, guide, onSaved }: EditGuideMod
         let errorData;
         try {
           errorData = await response.json();
-        } catch (e) {
+        } catch {
           errorData = { error: `HTTP ${response.status}: ${response.statusText}` };
         }
         console.error('API Error Response:', errorData);

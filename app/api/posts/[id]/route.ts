@@ -8,7 +8,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
       where: { id: parseInt(id) },
     });
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to delete post' }, { status: 500 });
   }
 }

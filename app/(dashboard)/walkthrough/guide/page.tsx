@@ -378,7 +378,7 @@ export default function GuideWalkthroughPage() {
           {currentStepData.id === 'complete' && (
             <Box>
               <Text mb="md" fw={500}>
-                You're ready to create guides!
+                You&apos;re ready to create guides!
               </Text>
               <Text size="sm" c="dimmed">
                 Guides can be assigned to studies, and when you create sessions for those studies,

@@ -25,7 +25,10 @@ const staticNavItems = [
   },
 ];
 
-export function Sidebar({ sidebarOpen, toggleSidebar }: SidebarProps) {
+export function Sidebar({
+  sidebarOpen: _sidebarOpen,
+  toggleSidebar: _toggleSidebar,
+}: SidebarProps) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
   const [studies, setStudies] = useState<Study[]>([]);
