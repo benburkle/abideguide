@@ -1,12 +1,26 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/get-session';
 
 export async function GET(request: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const studyId = searchParams.get('studyId');
     
-    const where = studyId ? { studyId: parseInt(studyId) } : {};
+    const where: any = {
+      userId: user.id,
+    };
+    if (studyId) {
+      where.studyId = parseInt(studyId);
+    }
     
     const sessions = await prisma.session.findMany({
       where,
@@ -56,7 +70,10 @@ export async function GET(request: Request) {
 
     // Fetch sessions again to include newly created steps
     const sessionsWithSteps = await prisma.session.findMany({
-      where,
+      where: {
+        userId: user.id,
+        ...(studyId ? { studyId: parseInt(studyId) } : {}),
+      },
       include: {
         study: {
           include: {
@@ -101,6 +118,14 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { studyId, date, time, insights, reference, stepId, selectionId } = body;
 
@@ -111,9 +136,12 @@ export async function POST(request: Request) {
       );
     }
 
-    // Verify study exists and get guide
-    const study = await prisma.study.findUnique({
-      where: { id: parseInt(studyId) },
+    // Verify study exists and belongs to user
+    const study = await prisma.study.findFirst({
+      where: { 
+        id: parseInt(studyId),
+        userId: user.id,
+      },
       include: {
         guide: {
           include: {
@@ -148,15 +176,20 @@ export async function POST(request: Request) {
       }
     }
 
-    // Verify selectionId if provided
+    // Verify selectionId if provided and belongs to user's resource
     if (selectionId) {
-      const selection = await prisma.selection.findUnique({
-        where: { id: parseInt(selectionId) },
+      const selection = await prisma.selection.findFirst({
+        where: { 
+          id: parseInt(selectionId),
+          resource: {
+            userId: user.id,
+          },
+        },
       });
 
       if (!selection) {
         return NextResponse.json(
-          { error: 'Selection not found', details: `Selection with ID ${selectionId} does not exist` },
+          { error: 'Selection not found', details: `Selection with ID ${selectionId} does not exist or does not belong to your resources` },
           { status: 404 }
         );
       }
@@ -165,6 +198,7 @@ export async function POST(request: Request) {
     // Create session
     const session = await prisma.session.create({
       data: {
+        userId: user.id,
         studyId: parseInt(studyId),
         date: date ? new Date(date) : null,
         time: time ? new Date(time) : null,

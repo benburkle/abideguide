@@ -1,12 +1,35 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { DashboardLayout } from './components/DashboardLayout';
-import { Box, Title, Text, Button, Stack, Paper, Group, ThemeIcon } from '@mantine/core';
+import { Box, Title, Text, Button, Stack, Paper, Group, ThemeIcon, Loader, Center } from '@mantine/core';
 import { IconClock, IconArrowRight } from '@tabler/icons-react';
 import { useWalkthrough } from './contexts/WalkthroughContext';
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const { openWalkthrough } = useWalkthrough();
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/auth/signin');
+    }
+  }, [status, router]);
+
+  if (status === 'loading') {
+    return (
+      <Center style={{ minHeight: '100vh' }}>
+        <Loader size="lg" />
+      </Center>
+    );
+  }
+
+  if (!session) {
+    return null;
+  }
   return (
     <DashboardLayout>
       <Box>

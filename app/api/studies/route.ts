@@ -1,9 +1,21 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/get-session';
 
 export async function GET() {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const studies = await prisma.study.findMany({
+      where: {
+        userId: user.id,
+      },
       include: {
         schedule: true,
         resource: true,
@@ -30,6 +42,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { name, scheduleId, resourceId, guideId } = body;
 
@@ -53,9 +73,12 @@ export async function POST(request: Request) {
         );
       }
 
-      // Check if resource exists
-      const resource = await prisma.resource.findUnique({
-        where: { id: parsedResourceId },
+      // Check if resource exists and belongs to user
+      const resource = await prisma.resource.findFirst({
+        where: { 
+          id: parsedResourceId,
+          userId: user.id,
+        },
       });
 
       if (!resource) {
@@ -66,46 +89,67 @@ export async function POST(request: Request) {
       }
     }
 
-    // Check if schedule exists if provided
+    // Validate schedule if provided
+    let parsedScheduleId: number | null = null;
     if (scheduleId) {
-      const parsedScheduleId = parseInt(scheduleId);
-      if (!isNaN(parsedScheduleId)) {
-        const schedule = await prisma.schedule.findUnique({
-          where: { id: parsedScheduleId },
-        });
+      parsedScheduleId = parseInt(scheduleId);
+      if (isNaN(parsedScheduleId)) {
+        return NextResponse.json(
+          { error: 'Invalid Schedule ID', details: `Schedule ID must be a valid number. Received: ${scheduleId}` },
+          { status: 400 }
+        );
+      }
 
-        if (!schedule) {
-          return NextResponse.json(
-            { error: 'Schedule not found', details: `Schedule with ID ${parsedScheduleId} does not exist` },
-            { status: 404 }
-          );
-        }
+      // Check if schedule exists and belongs to user
+      const schedule = await prisma.schedule.findFirst({
+        where: { 
+          id: parsedScheduleId,
+          userId: user.id,
+        },
+      });
+
+      if (!schedule) {
+        return NextResponse.json(
+          { error: 'Schedule not found', details: `Schedule with ID ${parsedScheduleId} does not exist` },
+          { status: 404 }
+        );
       }
     }
 
-    // Check if guide exists if provided
+    // Validate guide if provided
+    let parsedGuideId: number | null = null;
     if (guideId) {
-      const parsedGuideId = parseInt(guideId);
-      if (!isNaN(parsedGuideId)) {
-        const guide = await prisma.guide.findUnique({
-          where: { id: parsedGuideId },
-        });
+      parsedGuideId = parseInt(guideId);
+      if (isNaN(parsedGuideId)) {
+        return NextResponse.json(
+          { error: 'Invalid Guide ID', details: `Guide ID must be a valid number. Received: ${guideId}` },
+          { status: 400 }
+        );
+      }
 
-        if (!guide) {
-          return NextResponse.json(
-            { error: 'Guide not found', details: `Guide with ID ${parsedGuideId} does not exist` },
-            { status: 404 }
-          );
-        }
+      // Check if guide exists and belongs to user
+      const guide = await prisma.guide.findFirst({
+        where: { 
+          id: parsedGuideId,
+          userId: user.id,
+        },
+      });
+
+      if (!guide) {
+        return NextResponse.json(
+          { error: 'Guide not found', details: `Guide with ID ${parsedGuideId} does not exist` },
+          { status: 404 }
+        );
       }
     }
 
     const study = await prisma.study.create({
       data: {
         name: name.trim(),
-        scheduleId: scheduleId ? parseInt(scheduleId) : null,
+        userId: user.id,
+        scheduleId: parsedScheduleId,
         resourceId: parsedResourceId,
-        guideId: guideId ? parseInt(guideId) : null,
+        guideId: parsedGuideId,
       },
       include: {
         schedule: true,

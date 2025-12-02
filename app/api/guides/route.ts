@@ -1,8 +1,17 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/get-session';
 
 export async function GET() {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     // Check if prisma is initialized correctly
     if (!prisma || !prisma.guide) {
       console.error('Prisma client not initialized correctly. Available models:', Object.keys(prisma || {}));
@@ -13,6 +22,9 @@ export async function GET() {
     }
 
     const guides = await prisma.guide.findMany({
+      where: {
+        userId: user.id,
+      },
       include: {
         guideSteps: {
           orderBy: {
@@ -36,6 +48,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { name, levelOfResource, amtOfResource } = body;
 
@@ -58,6 +78,7 @@ export async function POST(request: Request) {
     const guide = await prisma.guide.create({
       data: {
         name,
+        userId: user.id,
         levelOfResource: levelOfResource || null,
         amtOfResource: amtOfResource || null,
       },

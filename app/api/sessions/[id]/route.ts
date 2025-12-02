@@ -1,14 +1,26 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/get-session';
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
-    let session = await prisma.session.findUnique({
-      where: { id: parseInt(id) },
+    let session = await prisma.session.findFirst({
+      where: { 
+        id: parseInt(id),
+        userId: user.id,
+      },
       include: {
         study: {
           include: {
@@ -55,8 +67,11 @@ export async function GET(
       });
 
       // Fetch the session again with the newly created steps
-      const updatedSession = await prisma.session.findUnique({
-        where: { id: parseInt(id) },
+      const updatedSession = await prisma.session.findFirst({
+        where: { 
+          id: parseInt(id),
+          userId: user.id,
+        },
         include: {
           study: {
             include: {
@@ -111,9 +126,32 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     const body = await request.json();
     const { date, time, insights, reference, stepId, selectionId } = body;
+
+    // Verify session belongs to user
+    const existingSession = await prisma.session.findFirst({
+      where: {
+        id: parseInt(id),
+        userId: user.id,
+      },
+    });
+
+    if (!existingSession) {
+      return NextResponse.json(
+        { error: 'Session not found' },
+        { status: 404 }
+      );
+    }
 
     // Verify stepId if provided
     if (stepId) {
@@ -129,15 +167,20 @@ export async function PUT(
       }
     }
 
-    // Verify selectionId if provided
+    // Verify selectionId if provided and belongs to user's resource
     if (selectionId) {
-      const selection = await prisma.selection.findUnique({
-        where: { id: parseInt(selectionId) },
+      const selection = await prisma.selection.findFirst({
+        where: { 
+          id: parseInt(selectionId),
+          resource: {
+            userId: user.id,
+          },
+        },
       });
 
       if (!selection) {
         return NextResponse.json(
-          { error: 'Selection not found', details: `Selection with ID ${selectionId} does not exist` },
+          { error: 'Selection not found', details: `Selection with ID ${selectionId} does not exist or does not belong to your resources` },
           { status: 404 }
         );
       }
@@ -152,7 +195,10 @@ export async function PUT(
     if (selectionId !== undefined) updateData.selectionId = selectionId ? parseInt(selectionId) : null;
 
     let session = await prisma.session.update({
-      where: { id: parseInt(id) },
+      where: { 
+        id: parseInt(id),
+        userId: user.id,
+      },
       data: updateData,
       include: {
         study: {
@@ -193,8 +239,11 @@ export async function PUT(
       });
 
       // Fetch the session again with the newly created steps
-      const updatedSession = await prisma.session.findUnique({
-        where: { id: parseInt(id) },
+      const updatedSession = await prisma.session.findFirst({
+        where: { 
+          id: parseInt(id),
+          userId: user.id,
+        },
         include: {
           study: {
             include: {
@@ -249,9 +298,36 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
+    
+    // Verify session belongs to user
+    const session = await prisma.session.findFirst({
+      where: {
+        id: parseInt(id),
+        userId: user.id,
+      },
+    });
+
+    if (!session) {
+      return NextResponse.json(
+        { error: 'Session not found' },
+        { status: 404 }
+      );
+    }
+
     await prisma.session.delete({
-      where: { id: parseInt(id) },
+      where: { 
+        id: parseInt(id),
+        userId: user.id,
+      },
     });
 
     return NextResponse.json({ success: true });

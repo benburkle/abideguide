@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Group, Text, ActionIcon, Box } from '@mantine/core';
+import { Group, Text, ActionIcon, Box, Menu } from '@mantine/core';
 import { useMantineColorScheme } from '@mantine/core';
-import { IconHelp, IconSun, IconMoon } from '@tabler/icons-react';
+import { IconHelp, IconSun, IconMoon, IconLogout, IconUser } from '@tabler/icons-react';
 import { MdMenuOpen } from 'react-icons/md';
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { Logo } from './Logo';
 import { CountdownTimer } from './CountdownTimer';
 
@@ -14,11 +16,19 @@ interface TopNavBarProps {
 
 export function TopNavBar({ onMenuClick }: TopNavBarProps) {
   const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+  const { data: session } = useSession();
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    router.push('/auth/signin');
+    router.refresh();
+  };
 
   const borderColor = mounted && colorScheme === 'dark' 
     ? 'var(--mantine-color-dark-4)' 
@@ -52,6 +62,21 @@ export function TopNavBar({ onMenuClick }: TopNavBarProps) {
           <ActionIcon variant="subtle" size="lg">
             <IconHelp size={20} />
           </ActionIcon>
+          {session?.user && (
+            <Menu shadow="md" width={200}>
+              <Menu.Target>
+                <ActionIcon variant="subtle" size="lg">
+                  <IconUser size={20} />
+                </ActionIcon>
+              </Menu.Target>
+              <Menu.Dropdown>
+                <Menu.Label>{session.user.email}</Menu.Label>
+                <Menu.Item leftSection={<IconLogout size={16} />} onClick={handleSignOut}>
+                  Sign out
+                </Menu.Item>
+              </Menu.Dropdown>
+            </Menu>
+          )}
         </Group>
       </Group>
     </Box>

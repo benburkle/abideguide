@@ -1,9 +1,21 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/get-session';
 
 export async function GET() {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const resources = await prisma.resource.findMany({
+      where: {
+        userId: user.id,
+      },
       include: {
         chapters: {
           orderBy: {
@@ -28,6 +40,14 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { name, series, type } = body;
 
@@ -48,6 +68,7 @@ export async function POST(request: Request) {
     const resource = await prisma.resource.create({
       data: {
         name,
+        userId: user.id,
         series: series || null,
         type,
       },

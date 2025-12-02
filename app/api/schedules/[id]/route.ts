@@ -1,14 +1,26 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getCurrentUser } from '@/lib/get-session';
 
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
-    const schedule = await prisma.schedule.findUnique({
-      where: { id: parseInt(id) },
+    const schedule = await prisma.schedule.findFirst({
+      where: { 
+        id: parseInt(id),
+        userId: user.id,
+      },
       include: {
         studies: {
           include: {
@@ -40,6 +52,14 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     const body = await request.json();
     const { day, timeStart, repeats, starts, ends, excludeDayOfWeek, excludeDate } = body;
@@ -65,8 +85,26 @@ export async function PUT(
       );
     }
 
+    // Verify schedule belongs to user
+    const existingSchedule = await prisma.schedule.findFirst({
+      where: {
+        id: parseInt(id),
+        userId: user.id,
+      },
+    });
+
+    if (!existingSchedule) {
+      return NextResponse.json(
+        { error: 'Schedule not found' },
+        { status: 404 }
+      );
+    }
+
     const schedule = await prisma.schedule.update({
-      where: { id: parseInt(id) },
+      where: { 
+        id: parseInt(id),
+        userId: user.id,
+      },
       data: {
         day: day.trim(),
         timeStart: timeStart.trim(),
@@ -100,9 +138,36 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
+    
+    // Verify schedule belongs to user
+    const schedule = await prisma.schedule.findFirst({
+      where: {
+        id: parseInt(id),
+        userId: user.id,
+      },
+    });
+
+    if (!schedule) {
+      return NextResponse.json(
+        { error: 'Schedule not found' },
+        { status: 404 }
+      );
+    }
+
     await prisma.schedule.delete({
-      where: { id: parseInt(id) },
+      where: { 
+        id: parseInt(id),
+        userId: user.id,
+      },
     });
     return NextResponse.json({ success: true });
   } catch (error) {
