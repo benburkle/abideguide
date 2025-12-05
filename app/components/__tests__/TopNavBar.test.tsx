@@ -37,11 +37,21 @@ describe('TopNavBar', () => {
     } as any);
   });
 
-  it('should render with study selector', () => {
-    renderWithProvider(<TopNavBar />);
+  it('should render with menu button', () => {
+    const onMenuClick = jest.fn();
+    renderWithProvider(<TopNavBar onMenuClick={onMenuClick} />);
 
-    // Should show "Select Study" when no study is selected
-    expect(screen.getByText('Select Study')).toBeInTheDocument();
+    expect(screen.getByLabelText('Toggle sidebar')).toBeInTheDocument();
+    expect(screen.getByText('Abide Guide')).toBeInTheDocument();
+  });
+
+  it('should call onMenuClick when menu button is clicked', async () => {
+    const user = userEvent.setup();
+    const onMenuClick = jest.fn();
+    renderWithProvider(<TopNavBar onMenuClick={onMenuClick} />);
+
+    await user.click(screen.getByLabelText('Toggle sidebar'));
+    expect(onMenuClick).toHaveBeenCalledTimes(1);
   });
 
   it('should toggle color scheme when theme button is clicked', async () => {
@@ -79,8 +89,7 @@ describe('TopNavBar', () => {
 
     // Verify component renders successfully with authenticated session
     expect(hasUserButton).toBe(true);
-    // Should show "Select Study" when no study is selected
-    expect(screen.getByText('Select Study')).toBeInTheDocument();
+    expect(screen.getByText('Abide Guide')).toBeInTheDocument();
   });
 
   it('should handle sign out', async () => {
@@ -104,8 +113,7 @@ describe('TopNavBar', () => {
     // which calls signOut, router.push, and router.refresh
     // Since Mantine Menu dropdown may not render in test environment,
     // we verify the component structure is correct and signOut is available
-    // Should show "Select Study" when no study is selected
-    expect(screen.getByText('Select Study')).toBeInTheDocument();
+    expect(screen.getByText('Abide Guide')).toBeInTheDocument();
     expect(auth.signOut).toBeDefined();
 
     // The menu should be conditionally rendered when session exists
